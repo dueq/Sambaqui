@@ -63,34 +63,19 @@
 
   /* ── Turn bar ── */
   .turn-bar {
-    display: flex;
-    align-items: center;
-    gap: 1.4rem;
+    display: flex; align-items: center; gap: 1.4rem;
     font-family: 'Cinzel', serif;
     font-size: clamp(0.7rem, 2vw, 0.85rem);
     letter-spacing: 0.15em;
   }
-
-  .player-tag {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    opacity: 0.35;
-    transition: opacity 0.3s ease;
-  }
+  .player-tag { display: flex; align-items: center; gap: 0.5rem; opacity: 0.35; transition: opacity 0.3s ease; }
   .player-tag.active { opacity: 1; }
-
-  .player-tag .dot {
-    width: 14px; height: 14px;
-    border-radius: 50%;
-    border: 2px solid transparent;
-  }
+  .player-tag .dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid transparent; }
   .player-tag.p1 .dot { background: #e8e0d0; border-color: var(--gold); }
   .player-tag.p2 .dot { background: #2a1a0e; border-color: var(--sand3); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.15); }
-
   .turn-divider { width: 1px; height: 16px; background: var(--accent); opacity: 0.4; }
 
-  /* ── Status message ── */
+  /* ── Status ── */
   .status {
     font-family: 'Cinzel', serif;
     font-size: clamp(0.65rem, 1.8vw, 0.78rem);
@@ -103,102 +88,94 @@
   .status.highlight { color: var(--gold); }
 
   /* ── Board ── */
-  .board-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--gap);
-  }
-
+  .board-wrapper { display: flex; flex-direction: column; align-items: center; gap: var(--gap); }
   .board-row { display: flex; gap: var(--gap); }
 
   .cell {
-    width: var(--cell-size);
-    height: var(--cell-size);
+    width: var(--cell-size); height: var(--cell-size);
     background-color: var(--sand2);
     background-image:
       radial-gradient(ellipse at 30% 30%, rgba(255,255,255,0.18) 0%, transparent 60%),
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='40' height='40' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
     border: 1.5px solid var(--sand3);
     border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     position: relative;
     cursor: default;
-    transition: border-color 0.15s ease;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
   }
-
   .cell.dark-sq {
     background-color: var(--sand3);
     background-image: radial-gradient(ellipse at 30% 30%, rgba(255,255,255,0.12) 0%, transparent 60%);
   }
-
-  /* Cell is clickable when it holds an active piece for current player */
   .cell.selectable { cursor: pointer; }
   .cell.selectable:hover { border-color: var(--gold); }
+  .cell.selected { border-color: var(--gold); box-shadow: inset 0 0 0 2px rgba(196,154,68,0.5); cursor: pointer; }
 
-  /* Selected cell gets a golden inset ring */
-  .cell.selected {
-    border-color: var(--gold);
-    box-shadow: inset 0 0 0 2px rgba(196,154,68,0.5);
+  /* Landing square — where the piece WILL stop if you click this direction */
+  .cell.landing {
     cursor: pointer;
+    border-color: rgba(196,154,68,0.7);
+    background-color: rgba(196,154,68,0.12);
   }
+  .cell.dark-sq.landing { background-color: rgba(196,154,68,0.18); }
+  .cell.landing:hover { border-color: var(--gold); background-color: rgba(196,154,68,0.22); }
+
+  /* Path squares (the trail the piece slides through) */
+  .cell.path {
+    background-color: rgba(196,154,68,0.06);
+  }
+  .cell.dark-sq.path { background-color: rgba(196,154,68,0.09); }
 
   .cell-label {
-    position: absolute;
-    bottom: 4px; left: 6px;
+    position: absolute; bottom: 4px; left: 6px;
     font-family: 'Cinzel', serif;
     font-size: clamp(0.55rem, 1.5vw, 0.7rem);
-    font-weight: 400;
-    color: var(--accent);
-    line-height: 1;
+    font-weight: 400; color: var(--accent);
+    line-height: 1; user-select: none; opacity: 0.7;
+  }
+
+  /* Arrow overlay shown on landing cells */
+  .arrow-hint {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(16px, 3vw, 22px);
+    color: rgba(196,154,68,0.75);
+    pointer-events: none;
     user-select: none;
-    opacity: 0.7;
+    line-height: 1;
   }
 
   /* ── Pieces ── */
   .piece {
     width: 68%; height: 68%;
-    border-radius: 50%;
-    flex-shrink: 0;
+    border-radius: 50%; flex-shrink: 0;
     transition: transform 0.15s ease, opacity 0.15s ease;
+    position: relative; z-index: 1;
   }
-
   .piece.p1 {
     background: radial-gradient(circle at 38% 32%, #f5f0e8, #c8bfad 55%, #a89f90);
     border: 2px solid rgba(196,154,68,0.5);
     box-shadow: 0 3px 8px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.6), inset 0 -2px 4px rgba(0,0,0,0.15);
   }
-
   .piece.p2 {
     background: radial-gradient(circle at 38% 32%, #5a3e28, #2a1a0e 55%, #1a0d05);
     border: 2px solid rgba(184,169,138,0.3);
     box-shadow: 0 3px 8px rgba(0,0,0,0.6), inset 0 1px 3px rgba(255,255,255,0.12), inset 0 -2px 4px rgba(0,0,0,0.4);
   }
-
-  .piece.inactive {
-    opacity: 0.45;
-    transform: scale(0.88);
-  }
-
-  .piece.active-piece {
-    animation: pulse 2s ease-in-out infinite;
-  }
-
+  .piece.inactive { opacity: 0.45; transform: scale(0.88); }
+  .piece.active-piece { animation: pulse 2s ease-in-out infinite; }
   .piece.p1.active-piece {
     border-color: var(--gold);
     box-shadow: 0 3px 8px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.6),
       0 0 0 3px rgba(196,154,68,0.35), 0 0 14px rgba(196,154,68,0.25);
   }
-
   .piece.p2.active-piece {
     border-color: var(--sand);
     box-shadow: 0 3px 8px rgba(0,0,0,0.6), inset 0 1px 3px rgba(255,255,255,0.12),
       0 0 0 3px rgba(232,220,200,0.3), 0 0 14px rgba(232,220,200,0.15);
   }
-
-  /* Selected piece lifts and brightens */
   .piece.selected-piece {
     animation: none !important;
     transform: scale(1.1);
@@ -217,47 +194,28 @@
   /* ── Board frame ── */
   .board-border {
     padding: clamp(10px, 2vw, 18px);
-    border: 2px solid var(--accent);
-    border-radius: 8px;
+    border: 2px solid var(--accent); border-radius: 8px;
     box-shadow: 0 0 0 1px rgba(196,154,68,0.15), 0 0 60px rgba(60,30,10,0.8), inset 0 0 30px rgba(0,0,0,0.3);
-    background: rgba(28,21,16,0.6);
-    position: relative;
+    background: rgba(28,21,16,0.6); position: relative;
   }
-
   .board-border::before {
-    content: '';
-    position: absolute; inset: 4px;
-    border: 1px solid rgba(196,154,68,0.2);
-    border-radius: 5px;
-    pointer-events: none;
+    content: ''; position: absolute; inset: 4px;
+    border: 1px solid rgba(196,154,68,0.2); border-radius: 5px; pointer-events: none;
   }
-
-  .corner-ornament {
-    position: absolute;
-    width: 14px; height: 14px;
-    border-color: var(--gold); border-style: solid; opacity: 0.5;
-  }
+  .corner-ornament { position: absolute; width: 14px; height: 14px; border-color: var(--gold); border-style: solid; opacity: 0.5; }
   .corner-ornament.tl { top: 8px; left: 8px; border-width: 2px 0 0 2px; }
   .corner-ornament.tr { top: 8px; right: 8px; border-width: 2px 2px 0 0; }
   .corner-ornament.bl { bottom: 8px; left: 8px; border-width: 0 0 2px 2px; }
   .corner-ornament.br { bottom: 8px; right: 8px; border-width: 0 2px 2px 0; }
 
   /* ── Legend ── */
-  .legend {
-    display: flex; gap: 2rem;
-    font-size: 0.75rem; font-weight: 300;
-    letter-spacing: 0.1em; color: var(--sand3);
-  }
+  .legend { display: flex; gap: 2rem; font-size: 0.75rem; font-weight: 300; letter-spacing: 0.1em; color: var(--sand3); }
   .legend-item { display: flex; align-items: center; gap: 0.5rem; }
   .legend-piece { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; }
   .legend-piece.p1 { background: radial-gradient(circle at 38% 32%, #f5f0e8, #c8bfad 55%, #a89f90); border: 1.5px solid rgba(196,154,68,0.5); }
   .legend-piece.p2 { background: radial-gradient(circle at 38% 32%, #5a3e28, #2a1a0e 55%, #1a0d05); border: 1.5px solid rgba(184,169,138,0.3); }
 
-  footer {
-    font-size: 0.7rem; font-weight: 300;
-    letter-spacing: 0.2em; color: var(--accent);
-    text-transform: uppercase; opacity: 0.6;
-  }
+  footer { font-size: 0.7rem; font-weight: 300; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; opacity: 0.6; }
 </style>
 </head>
 <body>
@@ -268,22 +226,16 @@
 </header>
 
 <div class="turn-bar">
-  <div class="player-tag p1 active" id="tag-p1">
-    <div class="dot"></div><span>Player 1</span>
-  </div>
+  <div class="player-tag p1 active" id="tag-p1"><div class="dot"></div><span>Player 1</span></div>
   <div class="turn-divider"></div>
-  <div class="player-tag p2" id="tag-p2">
-    <div class="dot"></div><span>Player 2</span>
-  </div>
+  <div class="player-tag p2" id="tag-p2"><div class="dot"></div><span>Player 2</span></div>
 </div>
 
 <div class="status" id="status">Select an active piece to move</div>
 
 <div class="board-border">
-  <span class="corner-ornament tl"></span>
-  <span class="corner-ornament tr"></span>
-  <span class="corner-ornament bl"></span>
-  <span class="corner-ornament br"></span>
+  <span class="corner-ornament tl"></span><span class="corner-ornament tr"></span>
+  <span class="corner-ornament bl"></span><span class="corner-ornament br"></span>
   <div class="board-wrapper" id="board"></div>
 </div>
 
@@ -292,19 +244,73 @@
   <div class="legend-item"><div class="legend-piece p2"></div><span>Player 2 — dark</span></div>
 </div>
 
-<footer>Step 3 — Selection</footer>
+<footer>Step 4 — Sliding</footer>
 
 <script>
   // ─────────────────────────────────────────────
-  //  GAME STATE
+  //  CONSTANTS & HELPERS
   // ─────────────────────────────────────────────
   const LABELS = 'ABCDEFGHIJKLMNOPQRSTUVWXY';
 
-  // Each piece: { player: 1|2, active: bool }
-  // Key is square label (A-Y)
+  // Convert label to [row, col]
+  function labelToRC(label) {
+    const idx = LABELS.indexOf(label);
+    return [Math.floor(idx / 5), idx % 5];
+  }
+
+  // Convert [row, col] to label, or null if out of bounds
+  function rcToLabel(r, c) {
+    if (r < 0 || r > 4 || c < 0 || c > 4) return null;
+    return LABELS[r * 5 + c];
+  }
+
+  // 8 directions: [dr, dc, arrow glyph]
+  const DIRS = [
+    [-1, -1, '↖'], [-1,  0, '↑'], [-1,  1, '↗'],
+    [ 0, -1, '←'],                [ 0,  1, '→'],
+    [ 1, -1, '↙'], [ 1,  0, '↓'], [ 1,  1, '↘'],
+  ];
+
+  // Slide a piece from `fromLabel` in direction [dr,dc].
+  // Returns { landing, path } where path is the list of squares
+  // the piece passes through (excluding from, including landing).
+  // Returns null if the piece can't move (already blocked).
+  function computeSlide(fromLabel, dr, dc, pieces) {
+    const [r0, c0] = labelToRC(fromLabel);
+    const path = [];
+    let r = r0 + dr, c = c0 + dc;
+    while (r >= 0 && r <= 4 && c >= 0 && c <= 4) {
+      const sq = rcToLabel(r, c);
+      if (pieces[sq]) {
+        // Blocked by a piece — stop one square before
+        break;
+      }
+      path.push(sq);
+      r += dr; c += dc;
+    }
+    if (path.length === 0) return null; // Can't move this way
+    return { landing: path[path.length - 1], path };
+  }
+
+  // Compute all valid slides from a square; returns array of
+  // { dr, dc, arrow, landing, path }
+  function computeAllSlides(fromLabel, pieces) {
+    const moves = [];
+    for (const [dr, dc, arrow] of DIRS) {
+      const result = computeSlide(fromLabel, dr, dc, pieces);
+      if (result) moves.push({ dr, dc, arrow, ...result });
+    }
+    return moves;
+  }
+
+  // ─────────────────────────────────────────────
+  //  GAME STATE
+  // ─────────────────────────────────────────────
   const state = {
     currentPlayer: 1,
-    selectedSquare: null,   // label of currently selected piece, or null
+    selectedSquare: null,
+    // currentMoves: array of move objects for selected piece
+    currentMoves: [],
     pieces: {
       B: { player: 1, active: true  },
       J: { player: 1, active: false },
@@ -324,7 +330,7 @@
   const statusEl = document.getElementById('status');
   const tagP1    = document.getElementById('tag-p1');
   const tagP2    = document.getElementById('tag-p2');
-  const cellEls  = {};   // label → cell div
+  const cellEls  = {};
 
   for (let row = 0; row < 5; row++) {
     const rowEl = document.createElement('div');
@@ -333,8 +339,7 @@
       const idx   = row * 5 + col;
       const label = LABELS[idx];
       const cell  = document.createElement('div');
-      const isDark = (row + col) % 2 === 1;
-      cell.className = 'cell' + (isDark ? ' dark-sq' : '');
+      cell.className = 'cell' + ((row + col) % 2 === 1 ? ' dark-sq' : '');
       cell.dataset.square = label;
       cell.innerHTML = `<span class="cell-label">${label}</span>`;
       cell.addEventListener('click', () => onCellClick(label));
@@ -345,39 +350,61 @@
   }
 
   // ─────────────────────────────────────────────
-  //  RENDER — reconcile DOM to state
+  //  RENDER
   // ─────────────────────────────────────────────
   function render() {
-    // Turn bar
     tagP1.classList.toggle('active', state.currentPlayer === 1);
     tagP2.classList.toggle('active', state.currentPlayer === 2);
 
-    // Cells & pieces
+    // Build sets for fast lookup
+    const landingSquares = new Set(state.currentMoves.map(m => m.landing));
+    const pathSquares    = new Set(state.currentMoves.flatMap(m => m.path.slice(0, -1)));
+    // Map landing → arrow glyph
+    const landingArrow   = {};
+    for (const m of state.currentMoves) landingArrow[m.landing] = m.arrow;
+
     for (const label of LABELS) {
       const cell  = cellEls[label];
       const piece = state.pieces[label];
       const isSelected = label === state.selectedSquare;
+      const isLanding  = landingSquares.has(label);
+      const isPath     = pathSquares.has(label);
 
-      // Remove old piece element(s)
-      cell.querySelectorAll('.piece').forEach(el => el.remove());
-      cell.classList.remove('selectable', 'selected');
+      // Reset classes (keep base + dark-sq)
+      const base = cell.className.includes('dark-sq') ? 'cell dark-sq' : 'cell';
+      cell.className = base;
 
+      // Remove old overlays
+      cell.querySelectorAll('.piece, .arrow-hint').forEach(el => el.remove());
+
+      // Apply move-hint classes
+      if (isLanding) cell.classList.add('landing');
+      else if (isPath) cell.classList.add('path');
+
+      // Piece
       if (piece) {
         const el = document.createElement('div');
         const isCurrentPlayer = piece.player === state.currentPlayer;
-        const isActive = piece.active;
 
         if (isSelected) {
           el.className = `piece p${piece.player} selected-piece`;
           cell.classList.add('selected');
-        } else if (isActive) {
+        } else if (piece.active) {
           el.className = `piece p${piece.player} active-piece`;
           if (isCurrentPlayer) cell.classList.add('selectable');
         } else {
           el.className = `piece p${piece.player} inactive`;
         }
-
         cell.appendChild(el);
+      }
+
+      // Arrow hint on landing squares (no piece there)
+      if (isLanding && !piece) {
+        const arrow = document.createElement('div');
+        arrow.className = 'arrow-hint';
+        arrow.textContent = landingArrow[label];
+        cell.appendChild(arrow);
+        cell.classList.add('selectable');
       }
     }
   }
@@ -388,26 +415,65 @@
   function onCellClick(label) {
     const piece = state.pieces[label];
 
-    // Clicking an active piece belonging to current player
-    if (piece && piece.player === state.currentPlayer && piece.active) {
-      if (state.selectedSquare === label) {
-        // Deselect
-        state.selectedSquare = null;
-        setStatus('Select an active piece to move');
-      } else {
-        // Select (switching from another piece is also fine)
-        state.selectedSquare = label;
-        setStatus(`Piece on ${label} selected — choose a direction to slide`, true);
-      }
-      render();
+    // ── Click a landing square → execute the move ──
+    const move = state.currentMoves.find(m => m.landing === label);
+    if (move) {
+      executeMove(state.selectedSquare, move);
       return;
     }
 
-    // Clicking elsewhere while something is selected — no-op for now
-    // (movement will be wired in Step 4)
-    if (state.selectedSquare && !piece) {
-      setStatus(`Piece on ${state.selectedSquare} selected — choose a direction to slide`, true);
+    // ── Click an active own piece → select / deselect ──
+    if (piece && piece.player === state.currentPlayer && piece.active) {
+      if (state.selectedSquare === label) {
+        clearSelection();
+      } else {
+        selectPiece(label);
+      }
+      return;
     }
+
+    // ── Click anywhere else while selected → deselect ──
+    if (state.selectedSquare) {
+      clearSelection();
+    }
+  }
+
+  function selectPiece(label) {
+    state.selectedSquare = label;
+    state.currentMoves   = computeAllSlides(label, state.pieces);
+    const n = state.currentMoves.length;
+    setStatus(
+      n > 0
+        ? `Piece on ${label} — ${n} slide${n > 1 ? 's' : ''} available`
+        : `Piece on ${label} — no moves available`,
+      n > 0
+    );
+    render();
+  }
+
+  function clearSelection() {
+    state.selectedSquare = null;
+    state.currentMoves   = [];
+    setStatus('Select an active piece to move');
+    render();
+  }
+
+  function executeMove(fromLabel, move) {
+    const piece = state.pieces[fromLabel];
+
+    // Move piece to landing square
+    delete state.pieces[fromLabel];
+    state.pieces[move.landing] = { ...piece, active: false };
+
+    // Switch turn (Activity Transfer logic comes in Step 7-8;
+    // for now just hand off and mark the moved piece inactive,
+    // activating the other player's active piece(s) remain as-is)
+    state.currentPlayer = state.currentPlayer === 1 ? 2 : 1;
+    state.selectedSquare = null;
+    state.currentMoves   = [];
+
+    setStatus(`Piece moved to ${move.landing} — Player ${state.currentPlayer}'s turn`);
+    render();
   }
 
   function setStatus(msg, highlight = false) {
