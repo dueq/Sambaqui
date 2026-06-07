@@ -6,21 +6,22 @@
 <title>Sambaqui</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Macondo:wght@400;700&family=Macondo:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Macondo:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --sand:    #e8dcc8;
-    --sand2:   #d2c0a0;
-    --sand3:   #988a6c;
-    --dark:    #1c1510;
-    --mid:     #6c623e;
-    --accent:  #7a4f2e;
-    --gold:    #c49a44;
-    --cell-size: clamp(60px, 12vw, 90px);
-    --gap: clamp(3px, 0.6vw, 6px);
+    --sand:       #e8dcc8;
+    --sand2:      #d2c0a0;
+    --sand3:      #988a6c;
+    --dark:       #1c1510;
+    --mid:        #6c623e;
+    --accent:     #7a4f2e;
+    --gold:       #c49a44;
+    --teal:       #7ab8c0;
+    --cell-size:  clamp(60px, 12vw, 90px);
+    --gap:        clamp(3px, 0.6vw, 6px);
   }
 
   body {
@@ -28,99 +29,113 @@
     background-color: var(--dark);
     background-image:
       radial-gradient(ellipse 80% 60% at 50% 0%, #2e1f0e 0%, transparent 70%),
-      repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255,255,255,0.012) 3px, rgba(255,255,255,0.012) 4px),
+      repeating-linear-gradient(0deg,  transparent, transparent 3px, rgba(255,255,255,0.012) 3px, rgba(255,255,255,0.012) 4px),
       repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(255,255,255,0.012) 3px, rgba(255,255,255,0.012) 4px);
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    font-family: 'Lato', sans-serif; color: var(--sand);
-    padding: 2rem 1rem; gap: 2rem;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-family: 'Macondo', serif; color: var(--sand);
+    padding: 2rem 1rem; gap: 1.4rem;
   }
 
+  /* ── Header ── */
   header { text-align: center; }
-
   h1 {
-    font-family: 'Macondo', serif;
-    font-size: clamp(2.2rem, 7vw, 3.8rem);
-    font-weight: 800; letter-spacing: 0.06em;
-    color: var(--gold); text-shadow: 0 0 40px rgba(196,154,68,0.3); line-height: 1;
+    font-size: clamp(2.2rem, 7vw, 3.8rem); font-weight: 800;
+    letter-spacing: 0.06em; color: var(--gold);
+    text-shadow: 0 0 40px rgba(196,154,68,0.3); line-height: 1;
   }
-
   .subtitle {
     font-size: clamp(0.7rem, 2vw, 0.85rem); font-weight: 300;
     letter-spacing: 0.35em; text-transform: uppercase;
     color: var(--sand3); margin-top: 0.5rem;
   }
 
+  /* ── Stats Bar ── */
+  .stats-bar {
+    display: flex; gap: 1.5rem; font-size: clamp(0.75rem, 2vw, 0.9rem);
+    letter-spacing: 0.1em; background: rgba(0,0,0,0.2);
+    padding: 0.4rem 1.2rem; border-radius: 20px; border: 1px solid rgba(122,79,46,0.3);
+  }
+  .stats-bar strong { color: var(--gold); }
+
+  /* ── Mode toggle ── */
+  .mode-bar {
+    display: flex; align-items: center; gap: 0.8rem;
+    font-size: clamp(0.65rem, 1.8vw, 0.78rem); letter-spacing: 0.12em; color: var(--sand3);
+  }
+  .mode-btn {
+    background: transparent; border: 1px solid var(--accent); border-radius: 4px;
+    color: var(--sand3); padding: 0.3rem 0.9rem; cursor: pointer;
+    font-family: 'Macondo', serif; font-size: inherit; letter-spacing: inherit;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+  }
+  .mode-btn.active { background: rgba(196,154,68,0.12); border-color: var(--gold); color: var(--gold); }
+  .mode-btn:hover:not(.active) { border-color: var(--sand3); color: var(--sand); }
+
   /* ── Turn bar ── */
-  .turn-bar { display: flex; align-items: center; gap: 1.4rem; font-family: 'Cinzel', serif; font-size: clamp(0.7rem, 2vw, 0.85rem); letter-spacing: 0.15em; }
-  .player-tag { display: flex; align-items: center; gap: 0.5rem; opacity: 0.35; transition: opacity 0.3s ease; }
+  .turn-bar { display: flex; align-items: center; gap: 1.4rem; font-size: clamp(0.7rem, 2vw, 0.85rem); letter-spacing: 0.15em; }
+  .player-tag { display: flex; align-items: center; gap: 0.5rem; opacity: 0.35; transition: opacity 0.3s; }
   .player-tag.active { opacity: 1; }
   .player-tag .dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid transparent; }
   .player-tag.p1 .dot { background: #e8e0d0; border-color: var(--gold); }
   .player-tag.p2 .dot { background: #2a1a0e; border-color: var(--sand3); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.15); }
   .turn-divider { width: 1px; height: 16px; background: var(--accent); opacity: 0.4; }
 
-  /* ── Status ── */
+  /* ── Status bar ── */
   .status {
-    font-family: 'Cinzel', serif; font-size: clamp(0.65rem, 1.8vw, 0.78rem);
-    letter-spacing: 0.12em; color: var(--sand3);
-    min-height: 1.2em; text-align: center; transition: color 0.2s ease;
+    font-size: clamp(0.65rem, 1.8vw, 0.78rem); letter-spacing: 0.12em;
+    color: var(--sand3); min-height: 1.2em; text-align: center; transition: color 0.2s;
   }
   .status.highlight { color: var(--gold); }
   .status.warn      { color: #c0704a; }
-  .status.sneaking  { color: #7ab8c0; }
+  .status.sneaking  { color: var(--teal); }
 
-  /* ── Board Layout Grouping ── */
-  .board-container-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-  }
-
+  /* ── Board ── */
+  .board-container-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; }
   .board-border {
     padding: clamp(10px, 2vw, 18px); border: 2px solid var(--accent); border-radius: 8px;
     box-shadow: 0 0 0 1px rgba(196,154,68,0.15), 0 0 60px rgba(60,30,10,0.8), inset 0 0 30px rgba(0,0,0,0.3);
-    background: rgba(28,21,16,0.6); position: relative;
+    background: rgba(28,21,16,0.6);
   }
-
   .board-wrapper { display: flex; flex-direction: column; align-items: center; gap: var(--gap); }
-  .board-row { display: flex; gap: var(--gap); }
+  .board-row    { display: flex; gap: var(--gap); }
 
-  /* ── Miniature Analysis Controls ── */
+  /* ── Board nav controls ── */
   .board-controls {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
+    display: flex; justify-content: space-between; align-items: center; width: 100%;
     max-width: calc(var(--cell-size) * 5 + var(--gap) * 4 + clamp(20px, 4vw, 36px) + 4px);
-    padding: 0 2px;
+    padding: 0 2px; min-height: 28px;
   }
+  .board-controls.hidden { visibility: hidden; pointer-events: none; }
   .nav-btn {
-    background: var(--mid);
-    border: 1px solid var(--accent);
-    color: var(--gold);
-    border-radius: 4px;
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.72rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    background: var(--mid); border: 1px solid var(--accent); color: var(--gold);
+    border-radius: 4px; width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.72rem; cursor: pointer; transition: all 0.2s;
     box-shadow: 0 2px 6px rgba(0,0,0,0.4);
   }
-  .nav-btn:hover:not(:disabled) {
-    background: var(--accent);
-    border-color: var(--gold);
-    color: #fff;
-  }
-  .nav-btn:disabled {
-    opacity: 0.15;
-    cursor: not-allowed;
-    box-shadow: none;
-  }
+  .nav-btn:hover:not(:disabled) { background: var(--accent); border-color: var(--gold); color: #fff; }
+  .nav-btn:disabled { opacity: 0.15; cursor: not-allowed; box-shadow: none; }
 
+  /* ── 2P result banner ── */
+  .result-banner {
+    display: flex; align-items: center; justify-content: center; gap: 1.2rem;
+    border: 1px solid var(--accent); border-radius: 6px;
+    background: rgba(28,21,16,0.85); padding: 0.55rem 1.2rem;
+    font-size: clamp(0.7rem, 1.8vw, 0.85rem); letter-spacing: 0.15em;
+    color: var(--gold); animation: fade-in 0.4s ease;
+    width: 100%;
+    max-width: calc(var(--cell-size) * 5 + var(--gap) * 4 + clamp(20px, 4vw, 36px) + 4px);
+  }
+  .result-banner .banner-text { flex: 1; text-align: center; }
+  .result-banner .new-game-btn {
+    background: transparent; border: 1px solid rgba(196,154,68,0.45); border-radius: 4px;
+    color: var(--gold); padding: 0.25rem 0.75rem; cursor: pointer; white-space: nowrap;
+    font-family: 'Macondo', serif; font-size: inherit; letter-spacing: inherit;
+    transition: background 0.2s, border-color 0.2s; flex-shrink: 0;
+  }
+  .result-banner .new-game-btn:hover { background: rgba(196,154,68,0.12); border-color: var(--gold); }
+
+  /* ── Cells ── */
   .cell {
     width: var(--cell-size); height: var(--cell-size);
     background-color: var(--sand2);
@@ -129,41 +144,37 @@
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='40' height='40' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
     border: 1.5px solid var(--sand3); border-radius: 4px;
     display: flex; align-items: center; justify-content: center;
-    position: relative; cursor: default;
-    transition: border-color 0.15s ease, background-color 0.15s ease;
+    position: relative; cursor: default; transition: border-color 0.15s, background-color 0.15s;
   }
   .cell.dark-sq {
     background-color: var(--sand3);
     background-image: radial-gradient(ellipse at 30% 30%, rgba(255,255,255,0.12) 0%, transparent 60%);
   }
-  .cell.selectable { cursor: pointer; }
-  .cell.selectable:hover { border-color: var(--gold); }
-  .cell.selected { border-color: var(--gold); box-shadow: inset 0 0 0 2px rgba(196,154,68,0.5); cursor: pointer; }
-  .cell.landing { cursor: pointer; border-color: rgba(196,154,68,0.7); background-color: rgba(196,154,68,0.12); }
-  .cell.dark-sq.landing { background-color: rgba(196,154,68,0.18); }
-  .cell.landing:hover { border-color: var(--gold); background-color: rgba(196,154,68,0.22); }
-  .cell.blocked-landing { border-color: rgba(180,80,40,0.5); background-color: rgba(180,80,40,0.07); cursor: not-allowed; }
+  .cell.selectable            { cursor: pointer; }
+  .cell.selectable:hover      { border-color: var(--gold); }
+  .cell.selected              { border-color: var(--gold); box-shadow: inset 0 0 0 2px rgba(196,154,68,0.5); cursor: pointer; }
+  .cell.landing               { cursor: pointer; border-color: rgba(196,154,68,0.7); background-color: rgba(196,154,68,0.12); }
+  .cell.dark-sq.landing       { background-color: rgba(196,154,68,0.18); }
+  .cell.landing:hover         { border-color: var(--gold); background-color: rgba(196,154,68,0.22); }
+  .cell.blocked-landing       { border-color: rgba(180,80,40,0.5); background-color: rgba(180,80,40,0.07); cursor: not-allowed; }
   .cell.dark-sq.blocked-landing { background-color: rgba(180,80,40,0.11); }
-  .cell.path { background-color: var(--sand2); }
-  .cell.dark-sq.path { background-color: var(--sand3); }
+  .cell.los-target            { border-color: rgba(192,112,74,0.7); box-shadow: inset 0 0 0 2px rgba(192,112,74,0.35); }
+  .cell.win-line              { border-color: var(--gold) !important; background-color: rgba(196,154,68,0.22) !important; animation: win-flash 0.7s ease-in-out 3; }
+  .cell.dark-sq.win-line      { background-color: rgba(196,154,68,0.28) !important; }
 
-  .cell.los-target {
-    border-color: rgba(192,112,74,0.7);
-    box-shadow: inset 0 0 0 2px rgba(192,112,74,0.35);
+  @keyframes win-flash {
+    0%,100% { background-color: rgba(196,154,68,0.22); }
+    50%     { background-color: rgba(196,154,68,0.42); }
   }
-
-  .cell.win-line { border-color: var(--gold) !important; background-color: rgba(196,154,68,0.22) !important; animation: win-flash 0.7s ease-in-out 3; }
-  .cell.dark-sq.win-line { background-color: rgba(196,154,68,0.28) !important; }
-  @keyframes win-flash { 0%,100%{background-color:rgba(196,154,68,0.22)} 50%{background-color:rgba(196,154,68,0.42)} }
 
   .cell-label {
     position: absolute; bottom: 4px; left: 6px;
-    font-family: 'Macondo', serif; font-size: clamp(0.55rem, 1.5vw, 0.7rem);
-    font-weight: 400; color: var(--accent); line-height: 1; user-select: none; opacity: 0.7;
+    font-size: clamp(0.55rem, 1.5vw, 0.7rem); color: var(--accent);
+    line-height: 1; user-select: none; opacity: 0.7;
   }
 
   .arrow-hint {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
     font-size: clamp(16px, 3vw, 22px); color: rgba(196,154,68,0.75);
     pointer-events: none; user-select: none; line-height: 1;
   }
@@ -172,7 +183,7 @@
   /* ── Pieces ── */
   .piece {
     width: 68%; height: 68%; border-radius: 50%; flex-shrink: 0;
-    transition: transform 0.15s ease, opacity 0.15s ease;
+    transition: transform 0.15s, opacity 0.15s;
     position: relative; z-index: 1;
   }
   .piece.p1 {
@@ -185,12 +196,12 @@
     border: 2px solid rgba(184,169,138,0.3);
     box-shadow: 0 3px 8px rgba(0,0,0,0.6), inset 0 1px 3px rgba(255,255,255,0.12), inset 0 -2px 4px rgba(0,0,0,0.4);
   }
-  .piece.inactive { opacity: 0.9; transform: scale(0.9); }
-  .piece.active-piece { animation: pulse 2s ease-in-out infinite; }
+  .piece.inactive       { opacity: 0.9; transform: scale(0.9); }
+  .piece.active-piece   { animation: pulse 2s ease-in-out infinite; }
   .piece.p1.active-piece {
     border-color: var(--gold);
     box-shadow: 0 3px 8px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.6),
-      0 0 0 3px rgba(200, 146, 37, 0.35), 0 0 14px rgba(196,154,68,0.25);
+      0 0 0 3px rgba(200,146,37,0.35), 0 0 14px rgba(196,154,68,0.25);
   }
   .piece.p2.active-piece {
     border-color: var(--sand);
@@ -198,55 +209,27 @@
       0 0 0 3px rgba(232,220,200,0.3), 0 0 14px rgba(232,220,200,0.15);
   }
   .piece.selected-piece {
-    animation: none !important; transform: scale(1.1);
-    border-color: var(--gold) !important;
+    animation: none !important; transform: scale(1.1); border-color: var(--gold) !important;
     box-shadow: 0 6px 16px rgba(0,0,0,0.6), inset 0 1px 3px rgba(255,255,255,0.7),
       0 0 0 4px rgba(196,154,68,0.6), 0 0 24px rgba(196,154,68,0.5) !important;
   }
   .piece.sneaking {
     animation: pulse-sneak 1.2s ease-in-out infinite !important;
-    border-color: #7ab8c0 !important;
+    border-color: var(--teal) !important;
     box-shadow: 0 3px 8px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.5),
       0 0 0 3px rgba(122,184,192,0.4), 0 0 16px rgba(122,184,192,0.3) !important;
   }
   @keyframes pulse-sneak {
-    0%,100%{ box-shadow: 0 3px 8px rgba(0,0,0,0.5), 0 0 0 3px rgba(122,184,192,0.4), 0 0 12px rgba(122,184,192,0.25); }
-    50%    { box-shadow: 0 3px 8px rgba(0,0,0,0.5), 0 0 0 5px rgba(122,184,192,0.25), 0 0 22px rgba(122,184,192,0.4); }
+    0%,100% { box-shadow: 0 3px 8px rgba(0,0,0,0.5), 0 0 0 3px rgba(122,184,192,0.4), 0 0 12px rgba(122,184,192,0.25); }
+    50%     { box-shadow: 0 3px 8px rgba(0,0,0,0.5), 0 0 0 5px rgba(122,184,192,0.25), 0 0 22px rgba(122,184,192,0.4); }
   }
-
   @keyframes pulse {
-    0%,100%{ box-shadow: 0 3px 8px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.5), 0 0 0 3px rgba(196,154,68,0.35), 0 0 14px rgba(196,154,68,0.2); }
-    50%    { box-shadow: 0 3px 8px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.5), 0 0 0 5px rgba(196,154,68,0.2), 0 0 22px rgba(196,154,68,0.35); }
+    0%,100% { box-shadow: 0 3px 8px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.5), 0 0 0 3px rgba(196,154,68,0.35), 0 0 14px rgba(196,154,68,0.2); }
+    50%     { box-shadow: 0 3px 8px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.5), 0 0 0 5px rgba(196,154,68,0.2), 0 0 22px rgba(196,154,68,0.35); }
   }
 
-  /* ── Victory overlay ── */
-  .victory-overlay {
-    position: fixed; inset: 0; display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    background: rgba(10,6,3,0.82); z-index: 100;
-    animation: fade-in 0.5s ease; gap: 1.5rem;
-  }
-  @keyframes fade-in { from{opacity:0} to{opacity:1} }
-  .victory-title { font-family: 'Macondo', serif; font-size: clamp(2rem, 8vw, 4rem); font-weight: 700; color: var(--gold); letter-spacing: 0.15em; text-shadow: 0 0 60px rgba(196,154,68,0.6); text-align: center; }
-  .victory-sub   { font-family: 'Macondo', serif; font-size: clamp(0.8rem, 2.5vw, 1.1rem); letter-spacing: 0.2em; color: var(--sand3); text-align: center; }
-  .victory-btn   { margin-top: 0.5rem; font-family: 'Macondo', serif; font-size: clamp(0.7rem,2vw,0.85rem); letter-spacing: 0.2em; color: var(--gold); background: transparent; border: 1px solid rgba(196,154,68,0.5); border-radius: 4px; padding: 0.6rem 1.8rem; cursor: pointer; transition: background 0.2s ease, border-color 0.2s ease; }
-  .victory-btn:hover { background: rgba(196,154,68,0.1); border-color: var(--gold); }
-
-  /* ── Legend ── */
-  .legend { display: flex; gap: 2rem; font-size: 0.75rem; font-weight: 300; letter-spacing: 0.1em; color: var(--sand3); }
-  .legend-item { display: flex; align-items: center; gap: 0.5rem; }
-  .legend-piece { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; }
-  .legend-piece.p1 { background: radial-gradient(circle at 38% 32%, #f5f0e8, #c8bfad 55%, #a89f90); border: 1.5px solid rgba(196,154,68,0.5); }
-  .legend-piece.p2 { background: radial-gradient(circle at 38% 32%, #5a3e28, #2a1a0e 55%, #1a0d05); border: 1.5px solid rgba(184,169,138,0.3); }
-
-  footer { font-size: 0.7rem; font-weight: 300; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; opacity: 0.6; }
-
-  .piece-ghost {
-    position: fixed;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 50;
-  }
+  /* ── Piece ghost ── */
+  .piece-ghost { position: fixed; border-radius: 50%; pointer-events: none; z-index: 50; }
   .piece-ghost.p1 {
     background: radial-gradient(circle at 38% 32%, #f5f0e8, #c8bfad 55%, #a89f90);
     border: 2px solid var(--gold);
@@ -259,860 +242,1137 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.65), inset 0 1px 3px rgba(255,255,255,0.15),
       0 0 0 3px rgba(232,220,200,0.35), 0 0 18px rgba(232,220,200,0.2);
   }
+
+  /* ── Victory overlay ── */
+  .victory-overlay {
+    position: fixed; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    background: rgba(10,6,3,0.85); z-index: 100; gap: 1.2rem;
+    animation: fade-in 0.5s ease;
+  }
+  @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+  .victory-title { font-size: clamp(2rem, 8vw, 3.5rem); font-weight: 700; color: var(--gold); letter-spacing: 0.1em; text-shadow: 0 0 60px rgba(196,154,68,0.6); text-align: center; }
+  .victory-sub   { font-size: clamp(0.8rem, 2.5vw, 1.1rem); letter-spacing: 0.15em; color: var(--sand3); text-align: center; padding: 0 1rem; }
+  .victory-btn   { margin-top: 0.5rem; font-family: 'Macondo', serif; font-size: clamp(0.75rem,2vw,0.85rem); letter-spacing: 0.15em; color: var(--gold); background: transparent; border: 1px solid rgba(196,154,68,0.5); border-radius: 4px; padding: 0.6rem 1.8rem; cursor: pointer; transition: all 0.2s; }
+  .victory-btn:hover { background: rgba(196,154,68,0.12); border-color: var(--gold); }
+  .victory-btn.danger { color: #c0704a; border-color: rgba(192,112,74,0.5); }
+  .victory-btn.danger:hover { background: rgba(192,112,74,0.1); border-color: #c0704a; }
+
+  footer { font-size: 0.7rem; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; opacity: 0.6; }
 </style>
 </head>
 <body>
 
 <header>
   <h1>Sambaqui</h1>
+  <p class="subtitle">A game of sliding stones</p>
 </header>
 
+<div class="stats-bar" id="stats-bar">
+  <div>Streak: <strong id="stat-streak">0</strong></div>
+  <div>High Score: <strong id="stat-high">0</strong></div>
+</div>
+
+<div class="mode-bar">
+  <button class="mode-btn active" id="mode-ai">vs Computer</button>
+  <button class="mode-btn"        id="mode-2p">2 Players</button>
+</div>
+
 <div class="turn-bar">
-  <div class="player-tag p1 active" id="tag-p1"><div class="dot"></div><span>Player 1</span></div>
+  <div class="player-tag p1 active" id="tag-p1"><div class="dot"></div><span id="label-p1">Player (You)</span></div>
   <div class="turn-divider"></div>
-  <div class="player-tag p2" id="tag-p2"><div class="dot"></div><span>Player 2 (Computer)</span></div>
+  <div class="player-tag p2"        id="tag-p2"><div class="dot"></div><span id="label-p2">Computer</span></div>
 </div>
 
 <div class="status" id="status">Select an active piece to move</div>
 
 <div class="board-container-wrapper">
   <div class="board-border">
-    <span class="corner-ornament tl"></span><span class="corner-ornament tr"></span>
-    <span class="corner-ornament bl"></span><span class="corner-ornament br"></span>
     <div class="board-wrapper" id="board"></div>
   </div>
-  <div class="board-controls">
+  <div class="board-controls" id="nav-controls">
     <button id="undo-btn" class="nav-btn" title="Undo" disabled>◀</button>
     <button id="redo-btn" class="nav-btn" title="Redo" disabled>▶</button>
   </div>
+  <div id="result-banner-slot"></div>
 </div>
 
+<footer>Sambaqui &mdash; Strategy Game</footer>
+
 <script>
-  // ─────────────────────────────────────────────
-  //  CONSTANTS & HELPERS
-  // ─────────────────────────────────────────────
-  const LABELS = 'ABCDEFGHIJKLMNOPQRSTUVWXY';
+'use strict';
 
-  function labelToRC(label) {
-    const idx = LABELS.indexOf(label);
-    return [Math.floor(idx / 5), idx % 5];
+// ═══════════════════════════════════════════════════════════════
+//  SECTION 1 — CONSTANTS & COORDINATE HELPERS
+// ═══════════════════════════════════════════════════════════════
+
+const LABELS = 'ABCDEFGHIJKLMNOPQRSTUVWXY';
+
+const DIRS = [
+  [-1, -1, '↖'], [-1,  0, '↑'], [-1,  1, '↗'],
+  [ 0, -1, '←'],                [ 0,  1, '→'],
+  [ 1, -1, '↙'], [ 1,  0, '↓'], [ 1,  1, '↘'],
+];
+
+function labelToRC(label) {
+  const idx = LABELS.indexOf(label);
+  return [Math.floor(idx / 5), idx % 5];
+}
+
+function rcToLabel(r, c) {
+  if (r < 0 || r > 4 || c < 0 || c > 4) return null;
+  return LABELS[r * 5 + c];
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  SECTION 2 — PURE GAME LOGIC
+// ═══════════════════════════════════════════════════════════════
+
+function computeSlide(fromLabel, dr, dc, pieces) {
+  const [r0, c0] = labelToRC(fromLabel);
+  const path = [];
+  let r = r0 + dr, c = c0 + dc;
+  while (r >= 0 && r <= 4 && c >= 0 && c <= 4) {
+    const sq = rcToLabel(r, c);
+    if (pieces[sq]) break;
+    path.push(sq);
+    r += dr; c += dc;
   }
+  return path.length === 0 ? null : { landing: path[path.length - 1], path };
+}
 
-  function rcToLabel(r, c) {
-    if (r < 0 || r > 4 || c < 0 || c > 4) return null;
-    return LABELS[r * 5 + c];
+function computeAllSlides(fromLabel, pieces) {
+  const moves = [];
+  for (const [dr, dc, arrow] of DIRS) {
+    const result = computeSlide(fromLabel, dr, dc, pieces);
+    if (result) moves.push({ dr, dc, arrow, ...result });
   }
+  return moves;
+}
 
-  const DIRS = [
-    [-1, -1, '↖'], [-1,  0, '↑'], [-1,  1, '↗'],
-    [ 0, -1, '←'],                [ 0,  1, '→'],
-    [ 1, -1, '↙'], [ 1,  0, '↓'], [ 1,  1, '↘'],
-  ];
-
-  // ─────────────────────────────────────────────
-  //  SLIDING
-  // ─────────────────────────────────────────────
-  function computeSlide(fromLabel, dr, dc, pieces) {
+function computeVisibleMoveableEnemies(fromLabel, pieces, currentPlayer) {
+  const enemy = currentPlayer === 1 ? 2 : 1;
+  const visible = [];
+  for (const [dr, dc] of DIRS) {
     const [r0, c0] = labelToRC(fromLabel);
-    const path = [];
     let r = r0 + dr, c = c0 + dc;
     while (r >= 0 && r <= 4 && c >= 0 && c <= 4) {
       const sq = rcToLabel(r, c);
-      if (pieces[sq]) break;
-      path.push(sq);
+      if (pieces[sq]) {
+        if (pieces[sq].player === enemy && computeAllSlides(sq, pieces).length > 0) {
+          visible.push(sq);
+        }
+        break;
+      }
       r += dr; c += dc;
     }
-    if (path.length === 0) return null;
-    return { landing: path[path.length - 1], path };
   }
+  return visible;
+}
 
-  function computeAllSlides(fromLabel, pieces) {
-    const moves = [];
-    for (const [dr, dc, arrow] of DIRS) {
-      const result = computeSlide(fromLabel, dr, dc, pieces);
-      if (result) moves.push({ dr, dc, arrow, ...result });
-    }
-    return moves;
-  }
-
-  // ─────────────────────────────────────────────
-  //  LINE OF SIGHT
-  // ─────────────────────────────────────────────
-  function computeVisibleMoveableEnemies(fromLabel, pieces, currentPlayer) {
-    const enemy = currentPlayer === 1 ? 2 : 1;
-    const visible = [];
-
-    for (const [dr, dc] of DIRS) {
-      const [r0, c0] = labelToRC(fromLabel);
-      let r = r0 + dr, c = c0 + dc;
-      while (r >= 0 && r <= 4 && c >= 0 && c <= 4) {
-        const sq = rcToLabel(r, c);
-        if (pieces[sq]) {
-          if (pieces[sq].player === enemy) {
-            const slides = computeAllSlides(sq, pieces);
-            if (slides.length > 0) visible.push(sq);
-          }
-          break;
+const ALL_LINES = (() => {
+  const lines = [];
+  for (const [dr, dc] of [[0,1],[1,0],[1,1],[1,-1]]) {
+    for (let r = 0; r < 5; r++) {
+      for (let c = 0; c < 5; c++) {
+        const run = [];
+        let rr = r, cc = c;
+        while (rr >= 0 && rr < 5 && cc >= 0 && cc < 5) {
+          run.push(rcToLabel(rr, cc)); rr += dr; cc += dc;
         }
-        r += dr; c += dc;
+        for (let s = 0; s <= run.length - 3; s++)
+          for (let len = 3; len <= run.length - s; len++)
+            lines.push(run.slice(s, s + len));
       }
     }
-    return visible;
   }
+  const seen = new Set();
+  return lines.filter(line => {
+    const key = line.join(',');
+    if (seen.has(key)) return false;
+    seen.add(key); return true;
+  });
+})();
 
-  function isMoveablePiece(sq, pieces) {
-    return computeAllSlides(sq, pieces).length > 0;
+function checkVictory(pieces) {
+  for (const line of ALL_LINES) {
+    const players = line.map(sq => pieces[sq]?.player);
+    if (players.every(p => p === 1)) return { winner: 1, line };
+    if (players.every(p => p === 2)) return { winner: 2, line };
   }
+  return null;
+}
 
-  // ─────────────────────────────────────────────
-  //  VICTORY CHECK
-  // ─────────────────────────────────────────────
-  const ALL_LINES = (function() {
-    const lines = [];
-    const dirs = [[0,1],[1,0],[1,1],[1,-1]];
-    for (const [dr, dc] of dirs) {
-      for (let r = 0; r < 5; r++) {
-        for (let c = 0; c < 5; c++) {
-          const run = [];
-          let rr = r, cc = c;
-          while (rr >= 0 && rr < 5 && cc >= 0 && cc < 5) {
-            run.push(rcToLabel(rr, cc)); rr += dr; cc += dc;
-          }
-          for (let s = 0; s <= run.length - 3; s++)
-            for (let len = 3; len <= run.length - s; len++)
-              lines.push(run.slice(s, s + len));
-        }
-      }
+function serialiseState(pieces, currentPlayer) {
+  const parts = Object.entries(pieces)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([sq, p]) => `${sq}${p.player}${p.active ? 'A' : 'I'}`);
+  return `${currentPlayer}|${parts.join(',')}`;
+}
+
+function hypotheticalKey(fromLabel, landing, pieces, currentPlayer) {
+  const next = {};
+  for (const [sq, p] of Object.entries(pieces)) next[sq] = { ...p };
+
+  const moving = { ...next[fromLabel], active: false };
+  delete next[fromLabel];
+  next[landing] = moving;
+
+  const enemy = currentPlayer === 1 ? 2 : 1;
+  const visibleEnemies = computeVisibleMoveableEnemies(landing, next, currentPlayer);
+
+  if (visibleEnemies.length > 0) {
+    for (const [sq, p] of Object.entries(next)) {
+      if (p.player === enemy) next[sq] = { ...p, active: false };
     }
-    const seen = new Set();
-    return lines.filter(line => {
-      const key = line.join(',');
-      if (seen.has(key)) return false;
-      seen.add(key); return true;
-    });
-  })();
-
-  function checkVictory(pieces) {
-    for (const line of ALL_LINES) {
-      const players = line.map(sq => pieces[sq]?.player);
-      if (players.every(p => p === 1)) return { winner: 1, line };
-      if (players.every(p => p === 2)) return { winner: 2, line };
-    }
-    return null;
+    for (const sq of visibleEnemies) next[sq] = { ...next[sq], active: true };
+    return serialiseState(next, enemy);
+  } else {
+    next[landing] = { ...next[landing], active: true };
+    return serialiseState(next, currentPlayer);
   }
+}
 
-  // ─────────────────────────────────────────────
-  //  NOVELTY RULE
-  // ─────────────────────────────────────────────
-  function serialiseState(pieces, currentPlayer) {
-    const parts = Object.entries(pieces)
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([sq, p]) => `${sq}${p.player}${p.active ? 'A' : 'I'}`);
-    return `${currentPlayer}|${parts.join(',')}`;
-  }
+// ═══════════════════════════════════════════════════════════════
+//  SECTION 3 — GAME STATE & META-PROGRESSION
+// ═══════════════════════════════════════════════════════════════
 
-  function hypotheticalKeySim(fromLabel, landing, currentPieces, currentPlayer) {
-    const next = {};
-    for (const [sq, p] of Object.entries(currentPieces)) next[sq] = { ...p };
+let vsAI = true;
+let humanStreak = 0;
+let highScore = parseInt(localStorage.getItem('sambaqui_high_score') || '0', 10);
+let humanPlayerColor = 1; // Alternates every round (1 or 2)
 
-    const moving = { ...next[fromLabel], active: false };
-    delete next[fromLabel];
-    next[landing] = moving;
-
-    const enemy = currentPlayer === 1 ? 2 : 1;
-    const visibleEnemies = computeVisibleMoveableEnemies(landing, next, currentPlayer);
-
-    if (visibleEnemies.length > 0) {
-      for (const [sq, p] of Object.entries(next)) {
-        if (p.player === enemy) next[sq] = { ...p, active: false };
-      }
-      for (const sq of visibleEnemies) {
-        next[sq] = { ...next[sq], active: true };
-      }
-      return serialiseState(next, enemy);
-    } else {
-      next[landing] = { ...next[landing], active: true };
-      return serialiseState(next, currentPlayer);
-    }
-  }
-
-  // ─────────────────────────────────────────────
-  //  GAME STATE & INITIALIZATION
-  // ─────────────────────────────────────────────
-  function makeInitialPieces() {
-    return {
-      B: { player: 1, active: true  },
-      J: { player: 1, active: false },
-      P: { player: 1, active: false },
-      X: { player: 1, active: false },
-      D: { player: 2, active: false },
-      F: { player: 2, active: false },
-      T: { player: 2, active: false },
-      V: { player: 2, active: false },
-    };
-  }
-
-  const state = {
-    currentPlayer: 1,
-    selectedSquare: null,
-    currentMoves: [],
-    pieces: makeInitialPieces(),
-    history: new Set(),
-    gameOver: false,
-    winLine: null,
-    sneaking: false,
-    sneakingSquare: null,
-    losSquares: [],
-    animating: false,
+function makeInitialPieces() {
+  return {
+    B: { player: 1, active: true  },
+    J: { player: 1, active: false },
+    P: { player: 1, active: false },
+    X: { player: 1, active: false },
+    D: { player: 2, active: false },
+    F: { player: 2, active: false },
+    T: { player: 2, active: false },
+    V: { player: 2, active: false },
   };
+}
 
-  state.history.add(serialiseState(state.pieces, state.currentPlayer));
+const state = {
+  currentPlayer:  1,
+  selectedSquare: null,
+  currentMoves:   [],   
+  pieces:         makeInitialPieces(),
+  history:        new Set(),
+  gameOver:       false,
+  winLine:        null,
+  sneaking:       false,        
+  sneakingSquare: null,         
+  losSquares:     [],           
+  animating:      false,
+};
 
-  // Linear Timeline configuration for historical navigation
-  const timeline = [];
-  let timelineIndex = -1;
+state.history.add(serialiseState(state.pieces, state.currentPlayer));
 
-  function pushTimeline() {
-    if (timelineIndex < timeline.length - 1) {
-      timeline.splice(timelineIndex + 1);
-    }
-    timeline.push({
-      pieces: JSON.parse(JSON.stringify(state.pieces)),
-      currentPlayer: state.currentPlayer,
-      sneaking: state.sneaking,
-      sneakingSquare: state.sneakingSquare,
-      history: new Set(state.history),
-      gameOver: state.gameOver,
-      winLine: state.winLine ? [...state.winLine] : null
-    });
-    timelineIndex = timeline.length - 1;
-    updateUndoRedoButtons();
-  }
+// ── Timeline (consecutive undo/redo mechanics) ────────────────
 
-  function restoreTimeline(index) {
-    const snap = timeline[index];
-    state.pieces = JSON.parse(JSON.stringify(snap.pieces));
-    state.currentPlayer = snap.currentPlayer;
-    state.sneaking = snap.sneaking;
-    state.sneakingSquare = snap.sneakingSquare;
-    state.history = new Set(snap.history);
-    state.gameOver = snap.gameOver;
-    state.winLine = snap.winLine ? [...snap.winLine] : null;
-    state.selectedSquare = null;
-    state.currentMoves = [];
-    state.losSquares = [];
+const timeline = [];
+let timelineIndex = -1;
 
-    if (state.gameOver) {
-      if (state.winLine) {
-        const win = checkVictory(state.pieces);
-        setStatus(`Game Over! Player ${win ? win.winner : 1} Wins.`);
-      } else {
-        setStatus("Game Over! Stalemate Draw.");
-      }
+function pushTimeline() {
+  if (timelineIndex < timeline.length - 1) timeline.splice(timelineIndex + 1);
+  const victoryNow = state.gameOver ? checkVictory(state.pieces) : null;
+  timeline.push({
+    pieces:         JSON.parse(JSON.stringify(state.pieces)),
+    currentPlayer:  state.currentPlayer,
+    sneaking:       state.sneaking,
+    sneakingSquare: state.sneakingSquare,
+    history:        new Set(state.history),
+    gameOver:       state.gameOver,
+    winLine:        state.winLine ? [...state.winLine] : null,
+    winner:         state.gameOver ? (victoryNow ? victoryNow.winner : 'Draw') : null,
+  });
+  timelineIndex = timeline.length - 1;
+  updateNavButtons();
+}
+
+function restoreTimeline(index) {
+  timelineIndex = index;
+  const snap = timeline[index];
+  
+  state.pieces         = JSON.parse(JSON.stringify(snap.pieces));
+  state.currentPlayer  = snap.currentPlayer;
+  state.sneaking       = snap.sneaking;
+  state.sneakingSquare = snap.sneakingSquare;
+  state.history        = new Set(snap.history);
+  state.gameOver       = snap.gameOver;
+  state.winLine        = snap.winLine ? [...snap.winLine] : null;
+  state.selectedSquare = null;
+  state.currentMoves   = [];
+  state.losSquares     = [];
+
+  if (!vsAI) {
+    if (snap.gameOver) {
+      showResultBanner(snap.winner);
+      setStatus(snap.winner === 'Draw' ? 'Stalemate Draw.' : `Player ${snap.winner} wins!`, snap.winner === 'Draw' ? 'warn' : true);
     } else {
+      clearResultBanner();
       if (state.sneaking) {
         setStatus('Move again!', 'sneaking');
         selectPiece(state.sneakingSquare);
       } else {
-        setStatus(state.currentPlayer === 1 ? "Select an active piece to move" : "AI is calculating moves...", state.currentPlayer === 2 ? "highlight" : false);
+        setStatus('Select an active piece to move');
       }
     }
-    render();
-    updateUndoRedoButtons();
-    if (!state.gameOver && state.currentPlayer === 2) {
-      triggerAIMoveIfNeeded();
-    }
-  }
-
-  // ─────────────────────────────────────────────
-  //  BUILD BOARD DOM
-  // ─────────────────────────────────────────────
-  const boardEl  = document.getElementById('board');
-  const statusEl = document.getElementById('status');
-  const tagP1    = document.getElementById('tag-p1');
-  const tagP2    = document.getElementById('tag-p2');
-  const undoBtn  = document.getElementById('undo-btn');
-  const redoBtn  = document.getElementById('redo-btn');
-  const cellEls  = {};
-
-  for (let row = 0; row < 5; row++) {
-    const rowEl = document.createElement('div');
-    rowEl.className = 'board-row';
-    for (let col = 0; col < 5; col++) {
-      const idx   = row * 5 + col;
-      const label = LABELS[idx];
-      const cell  = document.createElement('div');
-      cell.className = 'cell' + ((row + col) % 2 === 1 ? ' dark-sq' : '');
-      cell.dataset.square = label;
-      cell.innerHTML = `<span class="cell-label">${label}</span>`;
-      cell.addEventListener('click', () => onCellClick(label));
-      rowEl.appendChild(cell);
-      cellEls[label] = cell;
-    }
-    boardEl.appendChild(rowEl);
-  }
-
-  function updateUndoRedoButtons() {
-    // Lock navigation adjustments during an ongoing AI turn loop or mid-slide animations
-    undoBtn.disabled = (timelineIndex <= 0 || state.animating || state.currentPlayer === 2);
-    redoBtn.disabled = (timelineIndex >= timeline.length - 1 || state.animating || state.currentPlayer === 2);
-  }
-
-  undoBtn.addEventListener('click', () => {
-    if (timelineIndex > 0 && !state.animating && state.currentPlayer !== 2) restoreTimeline(timelineIndex - 1);
-  });
-  redoBtn.addEventListener('click', () => {
-    if (timelineIndex < timeline.length - 1 && !state.animating && state.currentPlayer !== 2) restoreTimeline(timelineIndex + 1);
-  });
-
-  // ─────────────────────────────────────────────
-  //  RENDER
-  // ─────────────────────────────────────────────
-  function render() {
-    tagP1.classList.toggle('active', state.currentPlayer === 1);
-    tagP2.classList.toggle('active', state.currentPlayer === 2);
-
-    const landingMap  = {};
-    const pathSquares = new Set();
-    for (const m of state.currentMoves) {
-      landingMap[m.landing] = m;
-      m.path.slice(0, -1).forEach(sq => pathSquares.add(sq));
-    }
-
-    const winSet = state.winLine ? new Set(state.winLine) : new Set();
-    const losSet = new Set(state.losSquares);
-
-    for (const label of LABELS) {
-      const cell  = cellEls[label];
-      const piece = state.pieces[label];
-      const isSelected = label === state.selectedSquare;
-      const move       = landingMap[label];
-      const isPath     = pathSquares.has(label);
-
-      cell.className = cell.className.includes('dark-sq') ? 'cell dark-sq' : 'cell';
-      cell.querySelectorAll('.piece, .arrow-hint').forEach(el => el.remove());
-
-      if (winSet.has(label)) {
-        cell.classList.add('win-line');
-      } else if (losSet.has(label) && !move) {
-        cell.classList.add('los-target');
-      } else if (move) {
-        cell.classList.add(move.blocked ? 'blocked-landing' : 'landing');
-      } else if (isPath) {
-        cell.classList.add('path');
-      }
-
-      if (piece) {
-        const el = document.createElement('div');
-        const isCurrentPlayer = piece.player === state.currentPlayer;
-
-        if (isSelected) {
-          el.className = `piece p${piece.player} selected-piece`;
-          cell.classList.add('selected');
-        } else if (state.sneaking && label === state.sneakingSquare) {
-          el.className = `piece p${piece.player} sneaking`;
-        } else if (piece.active) {
-          el.className = `piece p${piece.player} active-piece`;
-          if (isCurrentPlayer && !state.gameOver && state.currentPlayer === 1) cell.classList.add('selectable');
-        } else {
-          el.className = `piece p${piece.player} inactive`;
-        }
-        cell.appendChild(el);
-      }
-
-      if (move && !piece && !state.gameOver) {
-        const arrow = document.createElement('div');
-        arrow.className = 'arrow-hint' + (move.blocked ? ' blocked' : '');
-        arrow.textContent = move.arrow;
-        cell.appendChild(arrow);
-        if (!move.blocked && state.currentPlayer === 1) cell.classList.add('selectable');
-      }
-    }
-  }
-
-  function showVictory(winner) {
-    const overlay = document.createElement('div');
-    overlay.className = 'victory-overlay';
-    if (winner === 'Draw') {
-      overlay.innerHTML = `
-        <div class="victory-title">Stalemate Draw</div>
-        <div class="victory-sub">No legal positions remain for either player</div>
-        <button class="victory-btn" id="restart-btn">Play Again</button>
-      `;
+  } else {
+    if (state.gameOver) {
+      setStatus(state.winLine ? 'Game Over!' : 'Stalemate Draw.');
+    } else if (state.sneaking) {
+      setStatus('Move again!', 'sneaking');
+      selectPiece(state.sneakingSquare);
     } else {
-      overlay.innerHTML = `
-        <div class="victory-title">Player ${winner} Wins</div>
-        <button class="victory-btn" id="restart-btn">Play Again</button>
-      `;
+      const aiTurn = state.currentPlayer !== humanPlayerColor;
+      setStatus(aiTurn ? 'Computer is calculating moves…' : 'Select an active piece to move', aiTurn ? 'highlight' : false);
     }
-    document.body.appendChild(overlay);
-    document.getElementById('restart-btn').addEventListener('click', restartGame);
   }
 
-  function restartGame() {
-    document.querySelector('.victory-overlay')?.remove();
-    state.currentPlayer  = 1;
-    state.selectedSquare = null;
-    state.currentMoves   = [];
-    state.gameOver       = false;
-    state.winLine        = null;
-    state.sneaking       = false;
+  render();
+  updateNavButtons();
+
+  if (!state.gameOver && vsAI && state.currentPlayer !== humanPlayerColor) triggerAIMove();
+}
+
+function showResultBanner(winner) {
+  clearResultBanner();
+  const banner = document.createElement('div');
+  banner.className = 'result-banner';
+  banner.id = 'result-banner';
+  const text = winner === 'Draw' ? 'Stalemate — no legal positions remain' : `Player ${winner} wins`;
+  banner.innerHTML = `
+    <span class="banner-text">${text}</span>
+    <button class="new-game-btn" id="banner-new-game">New Game</button>
+  `;
+  resultBannerSlot.appendChild(banner);
+  document.getElementById('banner-new-game').addEventListener('click', () => restartGame(false));
+}
+
+function clearResultBanner() {
+  resultBannerSlot.innerHTML = '';
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  SECTION 4 — DOM REFERENCES & BOARD CONSTRUCTION
+// ═══════════════════════════════════════════════════════════════
+
+const boardEl          = document.getElementById('board');
+const statusEl         = document.getElementById('status');
+const tagP1            = document.getElementById('tag-p1');
+const tagP2            = document.getElementById('tag-p2');
+const labelP1          = document.getElementById('label-p1');
+const labelP2          = document.getElementById('label-p2');
+const undoBtn          = document.getElementById('undo-btn');
+const redoBtn          = document.getElementById('redo-btn');
+const navControls      = document.getElementById('nav-controls');
+const resultBannerSlot = document.getElementById('result-banner-slot');
+const modeAIBtn        = document.getElementById('mode-ai');
+const mode2PBtn        = document.getElementById('mode-2p');
+const statStreakEl     = document.getElementById('stat-streak');
+const statHighEl       = document.getElementById('stat-high');
+const statsBarEl       = document.getElementById('stats-bar');
+const cellEls          = {};
+
+for (let row = 0; row < 5; row++) {
+  const rowEl = document.createElement('div');
+  rowEl.className = 'board-row';
+  for (let col = 0; col < 5; col++) {
+    const label = LABELS[row * 5 + col];
+    const cell  = document.createElement('div');
+    cell.className = `cell${(row + col) % 2 === 1 ? ' dark-sq' : ''}`;
+    cell.dataset.square = label;
+    cell.innerHTML = `<span class="cell-label">${label}</span>`;
+    cell.addEventListener('click', () => onCellClick(label));
+    rowEl.appendChild(cell);
+    cellEls[label] = cell;
+  }
+  boardEl.appendChild(rowEl);
+}
+
+function updateNavButtons() {
+  if (vsAI) {
+    navControls.classList.add('hidden');
+  } else {
+    navControls.classList.remove('hidden');
+    undoBtn.disabled = timelineIndex <= 0 || state.animating;
+    redoBtn.disabled = timelineIndex >= timeline.length - 1 || state.animating;
+  }
+}
+
+function updateMetaDisplay() {
+  statStreakEl.textContent = humanStreak;
+  statHighEl.textContent = highScore;
+  if (vsAI) {
+    statsBarEl.style.visibility = 'visible';
+    if (humanPlayerColor === 1) {
+      labelP1.textContent = "Player (You)";
+      labelP2.textContent = "Computer";
+    } else {
+      labelP1.textContent = "Computer";
+      labelP2.textContent = "Player (You)";
+    }
+  } else {
+    statsBarEl.style.visibility = 'hidden';
+    labelP1.textContent = "Player 1";
+    labelP2.textContent = "Player 2";
+  }
+}
+
+undoBtn.addEventListener('click', () => { if (!undoBtn.disabled) restoreTimeline(timelineIndex - 1); });
+redoBtn.addEventListener('click', () => { if (!redoBtn.disabled) restoreTimeline(timelineIndex + 1); });
+
+modeAIBtn.addEventListener('click', () => setMode(true));
+mode2PBtn.addEventListener('click', () => setMode(false));
+
+function setMode(ai) {
+  vsAI = ai;
+  modeAIBtn.classList.toggle('active',  ai);
+  mode2PBtn.classList.toggle('active', !ai);
+  document.querySelector('.victory-overlay')?.remove();
+  clearResultBanner();
+  restartGame(true); // reset system state back to default colors
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  SECTION 5 — RENDER
+// ═══════════════════════════════════════════════════════════════
+
+function render() {
+  tagP1.classList.toggle('active', state.currentPlayer === 1);
+  tagP2.classList.toggle('active', state.currentPlayer === 2);
+
+  const landingMap  = {};
+  const pathSquares = new Set();
+  for (const m of state.currentMoves) {
+    landingMap[m.landing] = m;
+    m.path.slice(0, -1).forEach(sq => pathSquares.add(sq));
+  }
+
+  const winSet = new Set(state.winLine ?? []);
+  const losSet = new Set(state.losSquares);
+  const humanTurn = !vsAI || state.currentPlayer === humanPlayerColor;
+
+  for (const label of LABELS) {
+    const cell      = cellEls[label];
+    const piece     = state.pieces[label];
+    const isSelected = label === state.selectedSquare;
+    const move       = landingMap[label];
+
+    cell.className = cell.className.includes('dark-sq') ? 'cell dark-sq' : 'cell';
+    cell.querySelectorAll('.piece, .arrow-hint').forEach(el => el.remove());
+
+    if      (winSet.has(label))                cell.classList.add('win-line');
+    else if (losSet.has(label) && !move)        cell.classList.add('los-target');
+    else if (move)                              cell.classList.add(move.blocked ? 'blocked-landing' : 'landing');
+    else if (pathSquares.has(label))            cell.classList.add('path');
+
+    if (piece) {
+      const el = document.createElement('div');
+      if (isSelected) {
+        el.className = `piece p${piece.player} selected-piece`;
+        cell.classList.add('selected');
+      } else if (state.sneaking && label === state.sneakingSquare) {
+        el.className = `piece p${piece.player} sneaking`;
+      } else if (piece.active) {
+        el.className = `piece p${piece.player} active-piece`;
+        if (piece.player === state.currentPlayer && !state.gameOver && humanTurn) {
+          cell.classList.add('selectable');
+        }
+      } else {
+        el.className = `piece p${piece.player} inactive`;
+      }
+      cell.appendChild(el);
+    }
+
+    if (move && !piece && !state.gameOver) {
+      const arrow = document.createElement('div');
+      arrow.className = `arrow-hint${move.blocked ? ' blocked' : ''}`;
+      arrow.textContent = move.arrow;
+      cell.appendChild(arrow);
+      if (!move.blocked && humanTurn) cell.classList.add('selectable');
+    }
+  }
+}
+
+function setStatus(msg, variant = false) {
+  statusEl.textContent = msg;
+  statusEl.classList.remove('highlight', 'warn', 'sneaking');
+  if (variant === true)        statusEl.classList.add('highlight');
+  if (variant === 'warn')      statusEl.classList.add('warn');
+  if (variant === 'sneaking')  statusEl.classList.add('sneaking');
+}
+
+function showVictory(winner) {
+  if (!vsAI) {
+    if (state.winLine) state.winLine._winner = winner;
+    showResultBanner(winner);
+    setStatus(winner === 'Draw' ? 'Stalemate Draw.' : `Player ${winner} wins!`, winner === 'Draw' ? 'warn' : true);
+    return;
+  }
+
+  const overlay = document.createElement('div');
+  overlay.className = 'victory-overlay';
+
+  if (winner === 'Draw') {
+    overlay.innerHTML = `
+      <div class="victory-title">Stalemate Draw</div>
+      <div class="victory-sub">Your win streak of ${humanStreak} is preserved! Switching pieces for the next match.</div>
+      <button class="victory-btn" id="next-round-btn">Advance to Next Round</button>
+    `;
+    document.body.appendChild(overlay);
+    document.getElementById('next-round-btn').addEventListener('click', () => restartGame(false));
+  } else if (winner === humanPlayerColor) {
+    humanStreak++;
+    if (humanStreak > highScore) {
+      highScore = humanStreak;
+      localStorage.setItem('sambaqui_high_score', highScore);
+    }
+    overlay.innerHTML = `
+      <div class="victory-title">Victory!</div>
+      <div class="victory-sub">You successfully defeated the level ${humanStreak} AI! Switching pieces for the next match.</div>
+      <button class="victory-btn" id="next-round-btn">Advance to Next Round</button>
+    `;
+    document.body.appendChild(overlay);
+    document.getElementById('next-round-btn').addEventListener('click', () => restartGame(false));
+  } else {
+    // Computer wins -> reset streak parameter completely
+    const finalScore = humanStreak;
+    humanStreak = 0;
+    overlay.innerHTML = `
+      <div class="victory-title" style="color: #c0704a;">Defeat</div>
+      <div class="victory-sub">The Computer broke your run. Final Score: <strong>${finalScore}</strong> consecutive wins.</div>
+      <button class="victory-btn danger" id="reset-run-btn">Start New Run from 0</button>
+    `;
+    document.body.appendChild(overlay);
+    document.getElementById('reset-run-btn').addEventListener('click', () => restartGame(true));
+  }
+  updateMetaDisplay();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  SECTION 6 — INTERACTION
+// ═══════════════════════════════════════════════════════════════
+
+function onCellClick(label) {
+  if (state.animating || state.gameOver) return;
+  if (vsAI && state.currentPlayer !== humanPlayerColor) return;
+
+  const piece = state.pieces[label];
+  const move  = state.currentMoves.find(m => m.landing === label);
+
+  if (move) {
+    if (!move.blocked) { executeMove(state.selectedSquare, move); return; }
+    setStatus('That move would repeat a previous position — forbidden', 'warn');
+    return;
+  }
+
+  if (state.sneaking) {
+    setStatus('Sneaking Combo — this piece must move again', 'warn');
+    return;
+  }
+
+  if (piece && piece.player === state.currentPlayer && piece.active) {
+    state.selectedSquare === label ? clearSelection() : selectPiece(label);
+    return;
+  }
+
+  if (state.selectedSquare) clearSelection();
+}
+
+function selectPiece(label) {
+  state.selectedSquare = label;
+  state.losSquares     = [];
+
+  const raw = computeAllSlides(label, state.pieces);
+  state.currentMoves = raw.map(m => ({
+    ...m,
+    blocked: state.history.has(hypotheticalKey(label, m.landing, state.pieces, state.currentPlayer)),
+  }));
+
+  const free    = state.currentMoves.filter(m => !m.blocked).length;
+  const blocked = state.currentMoves.filter(m =>  m.blocked).length;
+
+  if (state.currentMoves.length === 0) {
+    setStatus(`Piece on ${label} — no moves available`);
+  } else if (free === 0) {
+    setStatus(`Piece on ${label} — all ${blocked} slides forbidden by Novelty Rule`, 'warn');
+  } else {
+    const suffix = blocked > 0 ? ` (${blocked} forbidden)` : '';
+    const prefix = state.sneaking ? 'Sneaking — ' : '';
+    setStatus(`${prefix}Piece on ${label} — ${free} legal slide${free !== 1 ? 's' : ''}${suffix}`, state.sneaking ? 'sneaking' : true);
+  }
+  render();
+}
+
+function clearSelection() {
+  state.selectedSquare = null;
+  state.currentMoves   = [];
+  state.losSquares     = [];
+  setStatus('Select an active piece to move');
+  render();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  SECTION 7 — HARDWARE-ACCELERATED ANIMATION ENGINE
+// ═══════════════════════════════════════════════════════════════
+
+function cellCenter(label) {
+  const rect = cellEls[label].getBoundingClientRect();
+  return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+}
+
+function animateSlide(player, fromLabel, path, onDone) {
+  state.animating = true;
+  updateNavButtons();
+
+  const finalLabel = path[path.length - 1];
+  const srcCell    = cellEls[fromLabel];
+  const srcRect    = srcCell.getBoundingClientRect();
+  const pieceSize  = srcRect.width * 0.68;
+
+  // 1. Create our visual ghost layer
+  const ghost = document.createElement('div');
+  ghost.className = `piece-ghost p${player}`;
+  ghost.style.cssText = `
+    width: ${pieceSize}px;
+    height: ${pieceSize}px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 9999;
+    pointer-events: none;
+    transition: none;
+  `;
+
+  // 2. Fetch structural path milestones
+  const start = cellCenter(fromLabel);
+  const end   = cellCenter(finalLabel);
+
+  // 3. Pin initial coordinates into position
+  const startX = start.x - pieceSize / 2;
+  const startY = start.y - pieceSize / 2;
+  ghost.style.transform = `translate3d(${startX}px, ${startY}px, 0)`;
+  document.body.appendChild(ghost);
+
+  // 4. Ghost the static cell rendering out of view instantly
+  const srcPieceEl = srcCell.querySelector('.piece');
+  if (srcPieceEl) srcPieceEl.style.opacity = '0';
+
+  // 5. Force browser DOM reflow layout flush so it captures the base position
+  ghost.offsetHeight;
+
+  // 6. Fire single-pass hardware transition interpolation 
+  const SLIDE_DURATION = 240; // Total slide duration in milliseconds
+  ghost.style.transition = `transform ${SLIDE_DURATION}ms cubic-bezier(0.25, 1, 0.5, 1)`;
+  
+  const endX = end.x - pieceSize / 2;
+  const endY = end.y - pieceSize / 2;
+  ghost.style.transform = `translate3d(${endX}px, ${endY}px, 0)`;
+
+  // 7. Houseclean and hands turn over to logic pass
+  setTimeout(() => {
+    ghost.remove();
+    state.animating = false;
+    updateNavButtons();
+    onDone();
+  }, SLIDE_DURATION);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  SECTION 8 — MOVE EXECUTION & RESOLUTION
+// ═══════════════════════════════════════════════════════════════
+
+function executeMove(fromLabel, move) {
+  state.selectedSquare = null;
+  state.currentMoves   = [];
+  render();
+  const player = state.pieces[fromLabel].player;
+  animateSlide(player, fromLabel, move.path, () => applyMove(fromLabel, move));
+}
+
+function applyMove(fromLabel, move) {
+  for (const [sq, p] of Object.entries(state.pieces)) {
+    if (p.player === state.currentPlayer && sq !== fromLabel) {
+      state.pieces[sq] = { ...p, active: false };
+    }
+  }
+  const movingPiece = { ...state.pieces[fromLabel], active: false };
+  delete state.pieces[fromLabel];
+  state.pieces[move.landing] = movingPiece;
+
+  const victory = checkVictory(state.pieces);
+  if (victory) {
+    state.gameOver   = true;
+    state.winLine    = victory.line;
+    state.sneaking   = false;
+    state.losSquares = [];
+    render();
+    pushTimeline();
+    setTimeout(() => showVictory(victory.winner), 600);
+    return;
+  }
+
+  const visibleEnemies = computeVisibleMoveableEnemies(move.landing, state.pieces, state.currentPlayer);
+
+  if (visibleEnemies.length > 0) {
+    const enemy = state.currentPlayer === 1 ? 2 : 1;
+    for (const [sq, p] of Object.entries(state.pieces)) {
+      state.pieces[sq] = { ...p, active: p.player === enemy && visibleEnemies.includes(sq) };
+    }
+    state.currentPlayer = enemy;
+    state.sneaking      = false;
     state.sneakingSquare = null;
-    state.losSquares     = [];
-    state.animating      = false;
-    state.pieces         = makeInitialPieces();
-    state.history        = new Set();
+
     state.history.add(serialiseState(state.pieces, state.currentPlayer));
-    
-    timeline.length = 0;
-    timelineIndex = -1;
+    state.losSquares = visibleEnemies;
+    render();
     pushTimeline();
 
-    setStatus('Select an active piece to move');
-    render();
-  }
+    const n = visibleEnemies.length;
+    setStatus(`Halted — ${n} enemy piece${n !== 1 ? 's' : ''} spotted.`);
+    setTimeout(() => { state.losSquares = []; render(); checkTurnPassing(); }, 1200);
 
-  // ─────────────────────────────────────────────
-  //  INTERACTION & SELECTION
-  // ─────────────────────────────────────────────
-  function onCellClick(label) {
-    if (state.gameOver || state.animating || state.currentPlayer === 2) return;
-
-    const piece = state.pieces[label];
-    const move  = state.currentMoves.find(m => m.landing === label);
-
-    if (move && !move.blocked) { executeMove(state.selectedSquare, move); return; }
-    if (move &&  move.blocked) { setStatus('That move would repeat a previous position — forbidden', 'warn'); return; }
-
-    if (state.sneaking) {
-      setStatus('Sneaking Combo — this piece must move again', 'warn');
-      return;
-    }
-
-    if (piece && piece.player === state.currentPlayer && piece.active) {
-      state.selectedSquare === label ? clearSelection() : selectPiece(label);
-      return;
-    }
-
-    if (state.selectedSquare) clearSelection();
-  }
-
-  function selectPiece(label) {
-    state.selectedSquare = label;
+  } else {
+    state.sneaking       = true;
+    state.sneakingSquare = move.landing;
     state.losSquares     = [];
+    state.pieces[move.landing] = { ...state.pieces[move.landing], active: true };
 
-    const raw = computeAllSlides(label, state.pieces);
+    state.history.add(serialiseState(state.pieces, state.currentPlayer));
+    render();
+    pushTimeline();
+    setStatus('Sneaking Combo — no enemies spotted, move again!', 'sneaking');
 
-    state.currentMoves = raw.map(m => {
-      const key     = hypotheticalKeySim(label, m.landing, state.pieces, state.currentPlayer);
-      const blocked = state.history.has(key);
-      return { ...m, blocked };
-    });
+    if (!vsAI || state.currentPlayer === humanPlayerColor) selectPiece(move.landing);
+    checkTurnPassing();
+  }
+}
 
-    const free    = state.currentMoves.filter(m => !m.blocked).length;
-    const blocked = state.currentMoves.filter(m =>  m.blocked).length;
+// ═══════════════════════════════════════════════════════════════
+//  SECTION 9 — PASS & DEADLOCK
+// ═══════════════════════════════════════════════════════════════
 
-    if (state.currentMoves.length === 0) {
-      setStatus(`Piece on ${label} — no moves available`);
-    } else if (free === 0) {
-      setStatus(`Piece on ${label} — all ${blocked} slides forbidden by Novelty Rule`, 'warn');
+function checkTurnPassing() {
+  if (state.gameOver) return;
+
+  const hasMoves = currentPlayerHasLegalMoves(state.pieces, state.currentPlayer, state.sneaking, state.sneakingSquare, state.history);
+  if (hasMoves) {
+    if (vsAI && state.currentPlayer !== humanPlayerColor) triggerAIMove();
+    return;
+  }
+
+  const passedFrom = state.currentPlayer;
+  state.sneaking       = false;
+  state.sneakingSquare = null;
+  state.currentPlayer  = state.currentPlayer === 1 ? 2 : 1;
+
+  for (const sq in state.pieces) {
+    const p = state.pieces[sq];
+    state.pieces[sq] = { ...p, active: p.player === state.currentPlayer && computeAllSlides(sq, state.pieces).length > 0 };
+  }
+
+  state.history.add(serialiseState(state.pieces, state.currentPlayer));
+  pushTimeline();
+
+  const newPlayerHasMoves = currentPlayerHasLegalMoves(state.pieces, state.currentPlayer, false, null, state.history);
+  if (!newPlayerHasMoves) {
+    state.gameOver = true;
+    pushTimeline();
+    setStatus('Stalemate Draw — no remaining legal positions available.', 'warn');
+    setTimeout(() => showVictory('Draw'), 600);
+    return;
+  }
+
+  setStatus(`Player ${passedFrom} has no legal moves! Turn automatically passes.`, 'warn');
+  render();
+  if (vsAI && state.currentPlayer !== humanPlayerColor) triggerAIMove();
+}
+
+function currentPlayerHasLegalMoves(pieces, player, sneaking, sneakingSquare, history) {
+  const squares = sneaking ? [sneakingSquare] : LABELS;
+  for (const label of squares) {
+    const p = pieces[label];
+    if (!p || p.player !== player || !p.active) continue;
+    for (const m of computeAllSlides(label, pieces)) {
+      if (!history.has(hypotheticalKey(label, m.landing, pieces, player))) return true;
+    }
+  }
+  return false;
+}
+
+function restartGame(forceResetColor = false) {
+  document.querySelector('.victory-overlay')?.remove();
+  clearResultBanner();
+
+  if (vsAI) {
+    if (forceResetColor) {
+      humanPlayerColor = 1;
+      humanStreak = 0;
     } else {
-      const suffix = blocked > 0 ? ` (${blocked} forbidden)` : '';
-      const prefix = state.sneaking ? 'Sneaking — ' : '';
-      setStatus(`${prefix}Piece on ${label} — ${free} legal slide${free > 1 ? 's' : ''}${suffix}`, state.sneaking ? 'sneaking' : true);
+      // Alternate pieces naturally between game cycles
+      humanPlayerColor = humanPlayerColor === 1 ? 2 : 1;
     }
-    render();
   }
 
-  function clearSelection() {
-    state.selectedSquare = null;
-    state.currentMoves   = [];
-    state.losSquares     = [];
+  Object.assign(state, {
+    currentPlayer:  1,
+    selectedSquare: null,
+    currentMoves:   [],
+    gameOver:       false,
+    winLine:        null,
+    sneaking:       false,
+    sneakingSquare: null,
+    losSquares:     [],
+    animating:      false,
+    pieces:         makeInitialPieces(),
+    history:        new Set(),
+  });
+  
+  state.history.add(serialiseState(state.pieces, state.currentPlayer));
+  timeline.length = 0;
+  timelineIndex   = -1;
+  
+  pushTimeline();
+  updateMetaDisplay();
+  
+  if (vsAI && state.currentPlayer !== humanPlayerColor) {
+    setStatus('Computer is calculating opening moves…', 'highlight');
+    triggerAIMove();
+  } else {
     setStatus('Select an active piece to move');
-    render();
+  }
+  render();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  SECTION 10 — TREE SEARCH ENGINE ADAPTATION (mcts.lua)
+// ═══════════════════════════════════════════════════════════════
+
+class SimState {
+  constructor(pieces, currentPlayer, sneaking, sneakingSquare, history, isGameOver, winner) {
+    this.pieces = pieces;
+    this.currentPlayer = currentPlayer;
+    this.sneaking = sneaking;
+    this.sneakingSquare = sneakingSquare;
+    this.history = new Set(history);
+    this.isGameOver = isGameOver;
+    this.winner = winner;
   }
 
-  // ─────────────────────────────────────────────
-  //  ANIMATION
-  // ─────────────────────────────────────────────
-  function cellCenter(label) {
-    const rect = cellEls[label].getBoundingClientRect();
-    return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
-  }
-
-  function animateSlide(player, fromLabel, path, onDone) {
-    state.animating = true;
-    updateUndoRedoButtons();
-
-    const srcRect  = cellEls[fromLabel].getBoundingClientRect();
-    const pieceSize = srcRect.width * 0.68;
-
-    const ghost = document.createElement('div');
-    ghost.className = `piece-ghost p${player}`;
-    ghost.style.width  = pieceSize + 'px';
-    ghost.style.height = pieceSize + 'px';
-
-    const start = cellCenter(fromLabel);
-    ghost.style.left = (start.x - pieceSize / 2) + 'px';
-    ghost.style.top  = (start.y - pieceSize / 2) + 'px';
-    ghost.style.transition = 'none';
-    document.body.appendChild(ghost);
-
-    const srcPieceEl = cellEls[fromLabel].querySelector('.piece');
-    if (srcPieceEl) srcPieceEl.style.opacity = '0';
-
-    const STEP_MS = 60;
-    let step = 0;
-    
-    function nextStep() {
-      if (step >= path.length) {
-        ghost.remove();
-        state.animating = false;
-        updateUndoRedoButtons();
-        onDone();
-        return;
-      }
-      const target = cellCenter(path[step]);
-      ghost.style.transition = `left ${STEP_MS}ms linear, top ${STEP_MS}ms linear`;
-      ghost.style.left = (target.x - pieceSize / 2) + 'px';
-      ghost.style.top  = (target.y - pieceSize / 2) + 'px';
-      step++;
-      setTimeout(nextStep, STEP_MS);
+  clone() {
+    const cp = {};
+    for (const sq in this.pieces) {
+      cp[sq] = { player: this.pieces[sq].player, active: this.pieces[sq].active };
     }
-    requestAnimationFrame(() => setTimeout(nextStep, 16));
+    return new SimState(cp, this.currentPlayer, this.sneaking, this.sneakingSquare, this.history, this.isGameOver, this.winner);
   }
 
-  // ─────────────────────────────────────────────
-  //  EXECUTE MOVE & POST-MOVE VALIDATORS
-  // ─────────────────────────────────────────────
-  function executeMove(fromLabel, move) {
-    const movingPiece = state.pieces[fromLabel];
-    const player      = movingPiece.player;
-
-    state.selectedSquare = null;
-    state.currentMoves   = [];
-    render();
-
-    animateSlide(player, fromLabel, move.path, () => applyMove(fromLabel, move, movingPiece));
-  }
-
-  function applyMove(fromLabel, move, movingPiece) {
-    for (const [sq, p] of Object.entries(state.pieces)) {
-      if (p.player === state.currentPlayer && sq !== fromLabel) {
-        state.pieces[sq] = { ...p, active: false };
+  getValidMoves() {
+    const moves = [];
+    const pool = this.sneaking ? [this.sneakingSquare] : LABELS;
+    for (const label of pool) {
+      const p = this.pieces[label];
+      if (!p || p.player !== this.currentPlayer || !p.active) continue;
+      for (const m of computeAllSlides(label, this.pieces)) {
+        if (!this.history.has(hypotheticalKey(label, m.landing, this.pieces, this.currentPlayer))) {
+          moves.push({ from: label, move: m });
+        }
       }
     }
+    return moves;
+  }
 
-    delete state.pieces[fromLabel];
-    state.pieces[move.landing] = { ...movingPiece, active: false };
+  makeMove(from, moveObj) {
+    for (const sq in this.pieces) {
+      if (this.pieces[sq].player === this.currentPlayer) this.pieces[sq].active = false;
+    }
+    const moving = this.pieces[from];
+    delete this.pieces[from];
+    this.pieces[moveObj.landing] = { player: moving.player, active: false };
 
-    const victory = checkVictory(state.pieces);
+    const victory = checkVictory(this.pieces);
     if (victory) {
-      state.gameOver   = true;
-      state.winLine    = victory.line;
-      state.losSquares = [];
-      state.sneaking   = false;
-      render();
-      pushTimeline();
-      setTimeout(() => showVictory(victory.winner), 600);
+      this.isGameOver = true;
+      this.winner = victory.winner;
       return;
     }
 
-    const visibleEnemies = computeVisibleMoveableEnemies(move.landing, state.pieces, state.currentPlayer);
+    const visibleEnemies = computeVisibleMoveableEnemies(moveObj.landing, this.pieces, this.currentPlayer);
+    const enemy = this.currentPlayer === 1 ? 2 : 1;
 
     if (visibleEnemies.length > 0) {
-      const enemy = state.currentPlayer === 1 ? 2 : 1;
-
-      for (const [sq, p] of Object.entries(state.pieces)) {
-        if (p.player === enemy) state.pieces[sq] = { ...p, active: false };
-      }
-      for (const sq of visibleEnemies) {
-        state.pieces[sq] = { ...state.pieces[sq], active: true };
-      }
-
-      state.currentPlayer  = enemy;
-      state.sneaking        = false;
-      state.sneakingSquare  = null;
-
-      const key = serialiseState(state.pieces, state.currentPlayer);
-      state.history.add(key);
-
-      state.losSquares = visibleEnemies;
-      render();
-      pushTimeline();
-
-      const n = visibleEnemies.length;
-      setStatus(`Halted — ${n} enemy piece${n > 1 ? 's' : ''} spotted. Shifted control.`);
-      setTimeout(() => { state.losSquares = []; render(); checkTurnPassing(); }, 1200);
+      for (const sq in this.pieces) this.pieces[sq].active = false;
+      for (const sq of visibleEnemies) this.pieces[sq].active = true;
+      this.currentPlayer = enemy;
+      this.sneaking = false;
+      this.sneakingSquare = null;
     } else {
-      state.sneaking       = true;
-      state.sneakingSquare = move.landing;
-      state.losSquares     = [];
-      state.pieces[move.landing] = { ...state.pieces[move.landing], active: true };
+      this.sneaking = true;
+      this.sneakingSquare = moveObj.landing;
+      this.pieces[moveObj.landing].active = true;
+    }
 
-      const key = serialiseState(state.pieces, state.currentPlayer);
-      state.history.add(key);
+    this.history.add(serialiseState(this.pieces, this.currentPlayer));
 
-      render();
-      pushTimeline();
-      setStatus('Sneaking Combo — no enemies spotted, move again!', 'sneaking');
-      
-      if (state.currentPlayer === 1) {
-        selectPiece(move.landing);
+    // Automated Turn Skip Check
+    if (!currentPlayerHasLegalMoves(this.pieces, this.currentPlayer, this.sneaking, this.sneakingSquare, this.history)) {
+      this.sneaking = false;
+      this.sneakingSquare = null;
+      this.currentPlayer = this.currentPlayer === 1 ? 2 : 1;
+      for (const sq in this.pieces) {
+        this.pieces[sq].active = this.pieces[sq].player === this.currentPlayer && computeAllSlides(sq, this.pieces).length > 0;
       }
+      this.history.add(serialiseState(this.pieces, this.currentPlayer));
+
+      if (!currentPlayerHasLegalMoves(this.pieces, this.currentPlayer, false, null, this.history)) {
+        this.isGameOver = true;
+        this.winner = 'Draw';
+      }
+    }
+  }
+}
+
+class MCTSNode {
+  constructor(simState, parent, leadingMove) {
+    this.state = simState;
+    this.parent = parent;
+    this.move = leadingMove; // format: { from, move }
+    this.children = [];
+    this.wins = 0;
+    this.visits = 0;
+    this.untriedMoves = simState.getValidMoves();
+    this.playerJustMoved = parent ? (simState.currentPlayer === 1 ? 2 : 1) : null;
+  }
+
+  ucb1(c = 1.41) {
+    if (this.visits === 0) return Infinity;
+    return (this.wins / this.visits) + c * Math.sqrt(Math.log(this.parent.visits) / this.visits);
+  }
+
+  isFullyExpanded() { return this.untriedMoves.length === 0; }
+  hasChildren() { return this.children.length > 0; }
+}
+
+class AdvancedEngineMCTS {
+  constructor(simState, iterations) {
+    this.root = new MCTSNode(simState, null, null);
+    this.iterations = iterations;
+    this.aiPlayer = simState.currentPlayer;
+  }
+
+  findImmediateWin(simState, player) {
+    const valid = simState.getValidMoves();
+    for (const action of valid) {
+      const temp = simState.clone();
+      temp.makeMove(action.from, action.move);
+      if (temp.isGameOver && temp.winner === player) return action;
+    }
+    return null;
+  }
+
+  findWinIn2(simState, player) {
+    const valid = simState.getValidMoves();
+    for (const action of valid) {
+      const temp = simState.clone();
+      temp.makeMove(action.from, action.move);
+      if (temp.isGameOver && temp.winner === player) return action;
+
+      const opponent = player === 1 ? 2 : 1;
+      const oppMoves = temp.getValidMoves();
+      let forced = true;
+
+      if (oppMoves.length > 0) {
+        for (const oppAction of oppMoves) {
+          const oppState = temp.clone();
+          oppState.makeMove(oppAction.from, oppAction.move);
+          // If the opponent answers, can we instantly lock a win on ply 3?
+          if (!this.findImmediateWin(oppState, player)) {
+            forced = false;
+            break;
+          }
+        }
+      } else {
+        forced = false; 
+      }
+      if (forced) return action;
+    }
+    return null;
+  }
+
+  findSafeMove(simState) {
+    const valid = simState.getValidMoves();
+    const safeOptions = [];
+    const opponent = this.aiPlayer === 1 ? 2 : 1;
+
+    for (const action of valid) {
+      const temp = simState.clone();
+      temp.makeMove(action.from, action.move);
+
+      let opponentCanWin = false;
+      const oppMoves = temp.getValidMoves();
+
+      for (const oppAction of oppMoves) {
+        const oppState = temp.clone();
+        oppState.makeMove(oppAction.from, oppAction.move);
+        if (oppState.isGameOver && oppState.winner === opponent) {
+          opponentCanWin = true;
+          break;
+        }
+      }
+      if (!opponentCanWin) safeOptions.push(action);
+    }
+    return safeOptions.length > 0 ? safeOptions[Math.floor(Math.random() * safeOptions.length)] : null;
+  }
+
+  search() {
+    const currentSimState = this.root.state;
+    if (currentSimState.getValidMoves().length === 0) return null;
+
+    // Lookahead Tier 1: Pull out immediate winning vectors
+    const win1 = this.findImmediateWin(currentSimState, this.aiPlayer);
+    if (win1) return win1;
+
+    // Lookahead Tier 2: Pull out guaranteed forced wins in 2 cycles
+    const win2 = this.findWinIn2(currentSimState, this.aiPlayer);
+    if (win2) return win2;
+
+    // Lookahead Tier 3: Verify and dodge immediate trap moves
+    const safeMove = this.findSafeMove(currentSimState);
+
+    // Lookahead Tier 4: Tree simulation expansion
+    for (let i = 0; i < this.iterations; i++) {
+      let node = this.select(this.root);
+      if (!node.state.isGameOver && !node.isFullyExpanded()) {
+        node = this.expand(node);
+      }
+      const simulationWinner = this.simulate(node.state);
+      this.backpropagate(node, simulationWinner);
+    }
+
+    const bestChildNode = this.getBestChild(this.root);
+    // Fallback protection: if structural MCTS breaks or returns an unsafe move, favor safe options
+    if (safeMove && bestChildNode) {
+      const bestActionIsSafe = this.checkIfActionIsSafe(currentSimState, bestChildNode.move);
+      if (!bestActionIsSafe) return safeMove;
+    }
+
+    return bestChildNode ? bestChildNode.move : (safeMove || currentSimState.getValidMoves()[0]);
+  }
+
+  checkIfActionIsSafe(simState, action) {
+    const temp = simState.clone();
+    temp.makeMove(action.from, action.move);
+    const opponent = this.aiPlayer === 1 ? 2 : 1;
+    for (const oppAction of temp.getValidMoves()) {
+      const oppState = temp.clone();
+      oppState.makeMove(oppAction.from, oppAction.move);
+      if (oppState.isGameOver && oppState.winner === opponent) return false;
+    }
+    return true;
+  }
+
+  select(node) {
+    while (node.isFullyExpanded() && node.hasChildren()) {
+      let bestScore = -Infinity;
+      let selectedChild = null;
+      for (const child of node.children) {
+        const score = child.ucb1();
+        if (score > bestScore) { bestScore = score; selectedChild = child; }
+      }
+      node = selectedChild;
+    }
+    return node;
+  }
+
+  expand(node) {
+    const idx = Math.floor(Math.random() * node.untriedMoves.length);
+    const action = node.untriedMoves.splice(idx, 1)[0];
+    const nextState = node.state.clone();
+    nextState.makeMove(action.from, action.move);
+    const child = new MCTSNode(nextState, node, action);
+    node.children.push(child);
+    return child;
+  }
+
+  simulate(simState) {
+    let current = simState.clone();
+    const maxDepth = 12; // Balanced lookahead horizon
+    let depth = 0;
+    while (!current.isGameOver && depth < maxDepth) {
+      const valid = current.getValidMoves();
+      if (valid.length === 0) { current.isGameOver = true; current.winner = 'Draw'; break; }
+      const action = valid[Math.floor(Math.random() * valid.length)];
+      current.makeMove(action.from, action.move);
+      depth++;
+    }
+    return current.winner;
+  }
+
+  backpropagate(node, winner) {
+    let curr = node;
+    while (curr) {
+      curr.visits++;
+      if (winner === curr.playerJustMoved) {
+        curr.wins += 1.0;
+      } else if (winner === 'Draw' || winner === null) {
+        curr.wins += 0.5;
+      }
+      curr = curr.parent;
+    }
+  }
+
+  getBestChild(node) {
+    let bestChild = null;
+    let maxVisits = -1;
+    for (const child of node.children) {
+      if (child.visits > maxVisits) { maxVisits = child.visits; bestChild = child; }
+    }
+    return bestChild;
+  }
+}
+
+function triggerAIMove() {
+  const computerColor = humanPlayerColor === 1 ? 2 : 1;
+  if (!vsAI || state.currentPlayer !== computerColor || state.gameOver || state.animating) return;
+
+  setStatus('Computer is thinking…', 'highlight');
+
+  setTimeout(() => {
+    const currentSimRoot = new SimState(state.pieces, state.currentPlayer, state.sneaking, state.sneakingSquare, state.history, state.gameOver, null);
+    
+    // Scale search scale based on consecutive human streak performance
+    const structuralIterations = 100 + (humanStreak * 150);
+    const boundedIterations = Math.min(structuralIterations, 1200); // Thread crash prevention ceiling
+
+    const processFinder = new AdvancedEngineMCTS(currentSimRoot, boundedIterations);
+    const optimalResult = processFinder.search();
+
+    if (optimalResult) {
+      const systemSlides = computeAllSlides(optimalResult.from, state.pieces);
+      const actualMatch = systemSlides.find(s => s.landing === optimalResult.move.landing);
+      if (actualMatch) {
+        state.selectedSquare = optimalResult.from;
+        executeMove(optimalResult.from, actualMatch);
+      }
+    } else {
+      // Emergency default out if deadlock passes fall through
       checkTurnPassing();
     }
-  }
+  }, 400);
+}
 
-  function checkTurnPassing() {
-    if (state.gameOver) return;
+// ═══════════════════════════════════════════════════════════════
+//  SECTION 11 — INITIALIZATION
+// ═══════════════════════════════════════════════════════════════
 
-    let currentHasMoves = false;
-    const piecesToScan = state.sneaking ? [state.sneakingSquare] : LABELS;
-    const currentHistory = new Set(state.history);
-
-    for (const label of piecesToScan) {
-      const p = state.pieces[label];
-      if (p && p.player === state.currentPlayer && p.active) {
-        const slides = computeAllSlides(label, state.pieces);
-        for (const m of slides) {
-          const key = hypotheticalKeySim(label, m.landing, state.pieces, state.currentPlayer);
-          if (!currentHistory.has(key)) { currentHasMoves = true; break; }
-        }
-      }
-      if (currentHasMoves) break;
-    }
-
-    if (!currentHasMoves) {
-      let originalPlayer = state.currentPlayer;
-      state.sneaking = false;
-      state.sneakingSquare = null;
-      state.currentPlayer = state.currentPlayer === 1 ? 2 : 1;
-
-      for (const sq in state.pieces) {
-        if (state.pieces[sq].player === state.currentPlayer) {
-          state.pieces[sq].active = isMoveablePiece(sq, state.pieces);
-        } else {
-          state.pieces[sq].active = false;
-        }
-      }
-
-      const passKey = serialiseState(state.pieces, state.currentPlayer);
-      state.history.add(passKey);
-      pushTimeline();
-
-      let alternateHasMoves = false;
-      for (const label of LABELS) {
-        const p = state.pieces[label];
-        if (p && p.player === state.currentPlayer && p.active) {
-          const slides = computeAllSlides(label, state.pieces);
-          for (const m of slides) {
-            const key = hypotheticalKeySim(label, m.landing, state.pieces, state.currentPlayer);
-            if (!state.history.has(key)) { alternateHasMoves = true; break; }
-          }
-        }
-        if (alternateHasMoves) break;
-      }
-
-      if (!alternateHasMoves) {
-        state.gameOver = true;
-        setStatus("Stalemate Draw — no remaining legal positions available.", "warn");
-        setTimeout(() => showVictory("Draw"), 600);
-      } else {
-        setStatus(`Player ${originalPlayer} has no legal moves left! Turn automatically passes.`, "warn");
-        render();
-        triggerAIMoveIfNeeded();
-      }
-    } else {
-      triggerAIMoveIfNeeded();
-    }
-  }
-
-  function setStatus(msg, variant = false) {
-    statusEl.textContent = msg;
-    statusEl.classList.remove('highlight', 'warn', 'sneaking');
-    if (variant === true)        statusEl.classList.add('highlight');
-    if (variant === 'warn')      statusEl.classList.add('warn');
-    if (variant === 'sneaking')  statusEl.classList.add('sneaking');
-  }
-
-  // ─────────────────────────────────────────────
-  //  MONTE CARLO SEARCH TREE ALGORITHM
-  // ─────────────────────────────────────────────
-  function triggerAIMoveIfNeeded() {
-    if (state.currentPlayer === 2 && !state.gameOver && !state.animating) {
-      setStatus("AI is thinking...", "highlight");
-      setTimeout(() => {
-        const bestAction = runMonteCarloSearch();
-        if (bestAction) {
-          const slides = computeAllSlides(bestAction.from, state.pieces);
-          const match = slides.find(s => s.landing === bestAction.move.landing);
-          if (match) {
-            state.selectedSquare = bestAction.from;
-            executeMove(bestAction.from, match);
-          }
-        }
-      }, 500);
-    }
-  }
-
-  function getPiecesClone(pieces) {
-    const out = {};
-    for (const sq in pieces) {
-      out[sq] = { player: pieces[sq].player, active: pieces[sq].active };
-    }
-    return out;
-  }
-
-  function applyMoveSim(fromLabel, moveObj, currentPieces, currentPlayer, historySet) {
-    const nextPieces = getPiecesClone(currentPieces);
-    for (const sq in nextPieces) {
-      if (nextPieces[sq].player === currentPlayer) nextPieces[sq].active = false;
-    }
-
-    const moving = nextPieces[fromLabel];
-    delete nextPieces[fromLabel];
-    nextPieces[moveObj.landing] = moving;
-    moving.active = false;
-
-    const victory = checkVictory(nextPieces);
-    if (victory) return { pieces: nextPieces, currentPlayer, gameOver: true, winner: victory.winner };
-
-    const visibleEnemies = computeVisibleMoveableEnemies(moveObj.landing, nextPieces, currentPlayer);
-    let nextPlayer = currentPlayer;
-    let nextSneaking = false;
-    let nextSneakingSquare = null;
-
-    if (visibleEnemies.length > 0) {
-      const enemy = currentPlayer === 1 ? 2 : 1;
-      for (const sq in nextPieces) {
-        if (nextPieces[sq].player === enemy) nextPieces[sq].active = false;
-      }
-      for (const sq of visibleEnemies) nextPieces[sq].active = true;
-      nextPlayer = enemy;
-    } else {
-      nextSneaking = true;
-      nextSneakingSquare = moveObj.landing;
-      nextPieces[moveObj.landing].active = true;
-    }
-
-    const nextHistory = new Set(historySet);
-    const key = serialiseState(nextPieces, nextPlayer);
-    nextHistory.add(key);
-
-    let nextLegalCount = getRawLegalMovesCountSim(nextPieces, nextPlayer, nextSneaking, nextSneakingSquare, nextHistory);
-    if (nextLegalCount === 0) {
-      nextSneaking = false;
-      nextSneakingSquare = null;
-      nextPlayer = nextPlayer === 1 ? 2 : 1;
-
-      for (const sq in nextPieces) {
-        nextPieces[sq].active = (nextPieces[sq].player === nextPlayer) ? computeAllSlides(sq, nextPieces).length > 0 : false;
-      }
-
-      const passKey = serialiseState(nextPieces, nextPlayer);
-      nextHistory.add(passKey);
-
-      if (getRawLegalMovesCountSim(nextPieces, nextPlayer, nextSneaking, nextSneakingSquare, nextHistory) === 0) {
-        return { pieces: nextPieces, currentPlayer: nextPlayer, gameOver: true, winner: 'Draw' };
-      }
-    }
-
-    return { pieces: nextPieces, currentPlayer: nextPlayer, sneaking: nextSneaking, sneakingSquare: nextSneakingSquare, history: nextHistory, gameOver: false, winner: null };
-  }
-
-  function getRawLegalMovesCountSim(pieces, currentPlayer, sneaking, sneakingSquare, historySet) {
-    let tally = 0;
-    const targetSquares = sneaking ? [sneakingSquare] : LABELS;
-    for (const label of targetSquares) {
-      const p = pieces[label];
-      if (p && p.player === currentPlayer && p.active) {
-        const slides = computeAllSlides(label, pieces);
-        for (const m of slides) {
-          if (!historySet.has(hypotheticalKeySim(label, m.landing, pieces, currentPlayer))) tally++;
-        }
-      }
-    }
-    return tally;
-  }
-
-  function runMonteCarloSearch() {
-    const rootHistory = new Set(state.history);
-    const options = [];
-    const searchPool = state.sneaking ? [state.sneakingSquare] : LABELS;
-
-    for (const label of searchPool) {
-      const p = state.pieces[label];
-      if (p && p.player === 2 && p.active) {
-        const slides = computeAllSlides(label, state.pieces);
-        for (const m of slides) {
-          if (!rootHistory.has(hypotheticalKeySim(label, m.landing, state.pieces, 2))) {
-            options.push({ from: label, move: m });
-          }
-        }
-      }
-    }
-
-    if (options.length === 0) return null;
-    if (options.length === 1) return options[0];
-
-    const SIMULATIONS_PER_OPTION = 200; 
-    let bestSelection = null;
-    let highestValue = -Infinity;
-
-    for (const opt of options) {
-      let accumulativeScore = 0;
-      for (let run = 0; run < SIMULATIONS_PER_OPTION; run++) {
-        accumulativeScore += executeRollout(opt.from, opt.move, state.pieces, 2, rootHistory);
-      }
-      if (accumulativeScore > highestValue) {
-        highestValue = accumulativeScore;
-        bestSelection = opt;
-      }
-    }
-    return bestSelection;
-  }
-
-  function executeRollout(rootFrom, rootMove, startingPieces, startingPlayer, rootHistory) {
-    let sim = applyMoveSim(rootFrom, rootMove, startingPieces, startingPlayer, rootHistory);
-    let depthCount = 0;
-    const MAX_ROLLOUT_DEPTH = 60;
-
-    while (!sim.gameOver && depthCount < MAX_ROLLOUT_DEPTH) {
-      depthCount++;
-      const availableMoves = [];
-      const validationPool = sim.sneaking ? [sim.sneakingSquare] : LABELS;
-
-      for (const label of validationPool) {
-        const p = sim.pieces[label];
-        if (p && p.player === sim.currentPlayer && p.active) {
-          const slides = computeAllSlides(label, sim.pieces);
-          for (const m of slides) {
-            if (!sim.history.has(hypotheticalKeySim(label, m.landing, sim.pieces, sim.currentPlayer))) {
-              availableMoves.push({ from: label, move: m });
-            }
-          }
-        }
-      }
-
-      if (availableMoves.length === 0) break;
-
-      const randomChoice = availableMoves[Math.floor(Math.random() * availableMoves.length)];
-      sim = applyMoveSim(randomChoice.from, randomChoice.move, sim.pieces, sim.currentPlayer, sim.history);
-    }
-
-    if (sim.gameOver) {
-      if (sim.winner === 2) return 1.0; 
-      if (sim.winner === 1) return -1.0;
-    }
-    return 0.0;
-  }
-
-  // ─────────────────────────────────────────────
-  //  INIT RUN
-  // ─────────────────────────────────────────────
-  pushTimeline();
-  render();
+updateMetaDisplay();
+pushTimeline();
+render();
 </script>
 </body>
 </html>
