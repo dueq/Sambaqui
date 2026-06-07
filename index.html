@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Macondo:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -33,7 +34,7 @@
       repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(255,255,255,0.012) 3px, rgba(255,255,255,0.012) 4px);
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     font-family: 'Macondo', serif; color: var(--sand);
-    padding: 2rem 1rem; gap: 1.4rem;
+    padding: 2rem 1rem; gap: 1.2rem;
   }
 
   /* ── Header ── */
@@ -57,7 +58,8 @@
   }
   .stats-bar strong { color: var(--gold); }
 
-  /* ── Mode toggle ── */
+  /* ── Mode & Help toggles ── */
+  .menu-controls { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; }
   .mode-bar {
     display: flex; align-items: center; gap: 0.8rem;
     font-size: clamp(0.65rem, 1.8vw, 0.78rem); letter-spacing: 0.12em; color: var(--sand3);
@@ -70,6 +72,14 @@
   }
   .mode-btn.active { background: rgba(196,154,68,0.12); border-color: var(--gold); color: var(--gold); }
   .mode-btn:hover:not(.active) { border-color: var(--sand3); color: var(--sand); }
+
+  .help-btn {
+    background: rgba(196,154,68,0.06); border: 1px dashed rgba(196,154,68,0.4);
+    border-radius: 4px; color: var(--sand2); padding: 0.25rem 0.8rem; cursor: pointer;
+    font-family: 'Macondo', serif; font-size: clamp(0.65rem, 1.8vw, 0.75rem); letter-spacing: 0.1em;
+    transition: all 0.2s;
+  }
+  .help-btn:hover { background: rgba(196,154,68,0.15); border-color: var(--gold); color: var(--gold); }
 
   /* ── Turn bar ── */
   .turn-bar { display: flex; align-items: center; gap: 1.4rem; font-size: clamp(0.7rem, 2vw, 0.85rem); letter-spacing: 0.15em; }
@@ -196,20 +206,22 @@
     border: 2px solid rgba(184,169,138,0.3);
     box-shadow: 0 3px 8px rgba(0,0,0,0.6), inset 0 1px 3px rgba(255,255,255,0.12), inset 0 -2px 4px rgba(0,0,0,0.4);
   }
-  .piece.inactive       { opacity: 0.9; transform: scale(0.9); }
+  .piece.inactive       { opacity: 0.9; transform: scale(0.95); }
   .piece.active-piece   { animation: pulse 2s ease-in-out infinite; }
   .piece.p1.active-piece {
-    border-color: var(--gold);
-    box-shadow: 0 3px 8px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.6),
-      0 0 0 3px rgba(200,146,37,0.35), 0 0 14px rgba(196,154,68,0.25);
+    border-color: var(--accent);
+    border: 4px solid var(--gold);
+    box-shadow: 0 3px 12px rgba(0,0,0,0.5), inset 0 1px 3px rgba(255,255,255,0.6),
+      0 0 0 3px rgba(232,220,200,0.3), 0 0 14px rgba(232,220,200,0.15);
   }
   .piece.p2.active-piece {
     border-color: var(--sand);
+    border: 4px solid var(--gold);
     box-shadow: 0 3px 8px rgba(0,0,0,0.6), inset 0 1px 3px rgba(255,255,255,0.12),
       0 0 0 3px rgba(232,220,200,0.3), 0 0 14px rgba(232,220,200,0.15);
   }
   .piece.selected-piece {
-    animation: none !important; transform: scale(1.1); border-color: var(--gold) !important;
+    animation: none !important; transform: scale(1.05); border-color: var(--gold) !important;
     box-shadow: 0 6px 16px rgba(0,0,0,0.6), inset 0 1px 3px rgba(255,255,255,0.7),
       0 0 0 4px rgba(196,154,68,0.6), 0 0 24px rgba(196,154,68,0.5) !important;
   }
@@ -243,20 +255,38 @@
       0 0 0 3px rgba(232,220,200,0.35), 0 0 18px rgba(232,220,200,0.2);
   }
 
-  /* ── Victory overlay ── */
-  .victory-overlay {
+  /* ── Modals & Overlays ── */
+  .victory-overlay, .tutorial-overlay {
     position: fixed; inset: 0; display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    background: rgba(10,6,3,0.85); z-index: 100; gap: 1.2rem;
-    animation: fade-in 0.5s ease;
+    background: rgba(10,6,3,0.88); z-index: 100; gap: 1.2rem;
+    animation: fade-in 0.4s ease;
   }
   @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
   .victory-title { font-size: clamp(2rem, 8vw, 3.5rem); font-weight: 700; color: var(--gold); letter-spacing: 0.1em; text-shadow: 0 0 60px rgba(196,154,68,0.6); text-align: center; }
   .victory-sub   { font-size: clamp(0.8rem, 2.5vw, 1.1rem); letter-spacing: 0.15em; color: var(--sand3); text-align: center; padding: 0 1rem; }
-  .victory-btn   { margin-top: 0.5rem; font-family: 'Macondo', serif; font-size: clamp(0.75rem,2vw,0.85rem); letter-spacing: 0.15em; color: var(--gold); background: transparent; border: 1px solid rgba(196,154,68,0.5); border-radius: 4px; padding: 0.6rem 1.8rem; cursor: pointer; transition: all 0.2s; }
-  .victory-btn:hover { background: rgba(196,154,68,0.12); border-color: var(--gold); }
-  .victory-btn.danger { color: #c0704a; border-color: rgba(192,112,74,0.5); }
-  .victory-btn.danger:hover { background: rgba(192,112,74,0.1); border-color: #c0704a; }
+  
+  .generic-btn   { font-family: 'Macondo', serif; font-size: clamp(0.75rem,2vw,0.85rem); letter-spacing: 0.15em; color: var(--gold); background: transparent; border: 1px solid rgba(196,154,68,0.5); border-radius: 4px; padding: 0.6rem 1.8rem; cursor: pointer; transition: all 0.2s; }
+  .generic-btn:hover { background: rgba(196,154,68,0.12); border-color: var(--gold); }
+  .generic-btn.danger { color: #c0704a; border-color: rgba(192,112,74,0.5); }
+  .generic-btn.danger:hover { background: rgba(192,112,74,0.1); border-color: #c0704a; }
+
+  /* ── Tutorial Card ── */
+  .tutorial-card {
+    background: #241a12; border: 2px solid var(--accent); border-radius: 8px;
+    width: 90%; max-width: 440px; padding: 1.8rem; display: flex; flex-direction: column; gap: 1.2rem;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,0,0,0.4);
+  }
+  .tutorial-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(122,79,46,0.3); padding-bottom: 0.6rem; }
+  .tutorial-title { color: var(--gold); font-size: 1.4rem; font-weight: bold; letter-spacing: 0.05em; }
+  .tutorial-pages { font-size: 0.8rem; color: var(--sand3); letter-spacing: 0.1em; }
+  .tutorial-body { font-family:"Lato"; font-size: 0.95rem; line-height: 1.5; color: var(--sand); min-height: 120px; }
+  .tutorial-body strong { color: var(--gold); }
+  .tutorial-body ul { padding-left: 1.2rem; margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.4rem; }
+  .tutorial-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; }
+  .tut-nav { background: transparent; border: 1px solid rgba(184,169,138,0.2); color: var(--sand2); font-family: 'Macondo', serif; padding: 0.3rem 0.8rem; border-radius: 4px; cursor: pointer; transition: all 0.2s; font-size: 0.8rem; }
+  .tut-nav:hover:not(:disabled) { border-color: var(--sand3); color: #fff; }
+  .tut-nav:disabled { opacity: 0.2; cursor: not-allowed; }
 
   footer { font-size: 0.7rem; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; opacity: 0.6; }
 </style>
@@ -264,19 +294,31 @@
 <body>
 
 <header>
-  <h1>Sambaqui</h1>
-  <p class="subtitle">A game of sliding stones</p>
+  <h1>sambaqui</h1>
 </header>
 
 <div class="stats-bar" id="stats-bar">
-  <div>Streak: <strong id="stat-streak">0</strong></div>
-  <div>High Score: <strong id="stat-high">0</strong></div>
+  <div>Level <strong id="stat-streak">0</strong></div>
+    <div class="turn-divider"></div>
+  <div>Best <strong id="stat-high">0</strong></div>
 </div>
 
-<div class="mode-bar">
-  <button class="mode-btn active" id="mode-ai">vs Computer</button>
-  <button class="mode-btn"        id="mode-2p">2 Players</button>
+<div class="menu-controls">
+  <div class="mode-bar">
+    <button class="mode-btn active" id="mode-ai">vs Computer</button>
+    <button class="mode-btn"        id="mode-2p">2 Players</button>
+  <button class="help-btn" id="open-tutorial-btn">How to Play</button>
 </div>
+
+
+
+
+<div class="board-container-wrapper">
+  <div class="board-border">
+    <div class="board-wrapper" id="board"></div>
+  </div>
+  <div class="status" id="status">Select an active piece to move</div>
+
 
 <div class="turn-bar">
   <div class="player-tag p1 active" id="tag-p1"><div class="dot"></div><span id="label-p1">Player (You)</span></div>
@@ -284,18 +326,15 @@
   <div class="player-tag p2"        id="tag-p2"><div class="dot"></div><span id="label-p2">Computer</span></div>
 </div>
 
-<div class="status" id="status">Select an active piece to move</div>
-
-<div class="board-container-wrapper">
-  <div class="board-border">
-    <div class="board-wrapper" id="board"></div>
-  </div>
   <div class="board-controls" id="nav-controls">
     <button id="undo-btn" class="nav-btn" title="Undo" disabled>◀</button>
+    
     <button id="redo-btn" class="nav-btn" title="Redo" disabled>▶</button>
   </div>
   <div id="result-banner-slot"></div>
 </div>
+
+
 
 <footer>Sambaqui &mdash; Strategy Game</footer>
 
@@ -391,7 +430,7 @@ const ALL_LINES = (() => {
     const key = line.join(',');
     if (seen.has(key)) return false;
     seen.add(key); return true;
-  });
+  }).sort((a, b) => b.length - a.length); // FIX: Evaluates longer vectors first so full 4 or 5-in-a-rows highlight completely
 })();
 
 function checkVictory(pieces) {
@@ -573,6 +612,7 @@ const navControls      = document.getElementById('nav-controls');
 const resultBannerSlot = document.getElementById('result-banner-slot');
 const modeAIBtn        = document.getElementById('mode-ai');
 const mode2PBtn        = document.getElementById('mode-2p');
+const openTutorialBtn  = document.getElementById('open-tutorial-btn');
 const statStreakEl     = document.getElementById('stat-streak');
 const statHighEl       = document.getElementById('stat-high');
 const statsBarEl       = document.getElementById('stats-bar');
@@ -605,7 +645,7 @@ function updateNavButtons() {
 }
 
 function updateMetaDisplay() {
-  statStreakEl.textContent = humanStreak;
+  statStreakEl.textContent = humanStreak + 1;
   statHighEl.textContent = highScore;
   if (vsAI) {
     statsBarEl.style.visibility = 'visible';
@@ -628,6 +668,7 @@ redoBtn.addEventListener('click', () => { if (!redoBtn.disabled) restoreTimeline
 
 modeAIBtn.addEventListener('click', () => setMode(true));
 mode2PBtn.addEventListener('click', () => setMode(false));
+openTutorialBtn.addEventListener('click', () => launchTutorial(unlockedTutorialTrigger));
 
 function setMode(ai) {
   vsAI = ai;
@@ -722,7 +763,7 @@ function showVictory(winner) {
     overlay.innerHTML = `
       <div class="victory-title">Stalemate Draw</div>
       <div class="victory-sub">Your win streak of ${humanStreak} is preserved! Switching pieces for the next match.</div>
-      <button class="victory-btn" id="next-round-btn">Advance to Next Round</button>
+      <button class="generic-btn" id="next-round-btn">Advance to Next Round</button>
     `;
     document.body.appendChild(overlay);
     document.getElementById('next-round-btn').addEventListener('click', () => restartGame(false));
@@ -734,19 +775,21 @@ function showVictory(winner) {
     }
     overlay.innerHTML = `
       <div class="victory-title">Victory!</div>
-      <div class="victory-sub">You successfully defeated the level ${humanStreak} AI! Switching pieces for the next match.</div>
-      <button class="victory-btn" id="next-round-btn">Advance to Next Round</button>
+      <div class="victory-sub">Level ${humanStreak} Complete</div>
+      <button class="generic-btn" id="next-round-btn">Next Round</button>
     `;
     document.body.appendChild(overlay);
     document.getElementById('next-round-btn').addEventListener('click', () => restartGame(false));
   } else {
-    // Computer wins -> reset streak parameter completely
     const finalScore = humanStreak;
     humanStreak = 0;
     overlay.innerHTML = `
-      <div class="victory-title" style="color: #c0704a;">Defeat</div>
-      <div class="victory-sub">The Computer broke your run. Final Score: <strong>${finalScore}</strong> consecutive wins.</div>
-      <button class="victory-btn danger" id="reset-run-btn">Start New Run from 0</button>
+      <div class="victory-title"><strong>${finalScore}</strong></div>
+      <div class="victory-sub">Game Over </div>
+      <div class="victory-sub">Best Score: <strong>${highScore}</strong></div>
+      <button class="generic-btn danger" id="reset-run-btn">Start New Game</button>
+      <button class="generic-btn danger" id="reset-run-btn">Share the Game</button>
+      <button class="generic-btn danger" id="reset-run-btn">Support the Game ❤</button>
     `;
     document.body.appendChild(overlay);
     document.getElementById('reset-run-btn').addEventListener('click', () => restartGame(true));
@@ -772,7 +815,7 @@ function onCellClick(label) {
   }
 
   if (state.sneaking) {
-    setStatus('Sneaking Combo — this piece must move again', 'warn');
+    setStatus('Chain move. This piece must move again', 'warn');
     return;
   }
 
@@ -803,8 +846,8 @@ function selectPiece(label) {
     setStatus(`Piece on ${label} — all ${blocked} slides forbidden by Novelty Rule`, 'warn');
   } else {
     const suffix = blocked > 0 ? ` (${blocked} forbidden)` : '';
-    const prefix = state.sneaking ? 'Sneaking — ' : '';
-    setStatus(`${prefix}Piece on ${label} — ${free} legal slide${free !== 1 ? 's' : ''}${suffix}`, state.sneaking ? 'sneaking' : true);
+    const prefix = state.sneaking ? 'Chain move. ' : '';
+    setStatus(`${prefix}Piece on ${label}. ${free} legal move${free !== 1 ? 's' : ''}${suffix}`, state.sneaking ? 'sneaking' : true);
   }
   render();
 }
@@ -835,7 +878,6 @@ function animateSlide(player, fromLabel, path, onDone) {
   const srcRect    = srcCell.getBoundingClientRect();
   const pieceSize  = srcRect.width * 0.68;
 
-  // 1. Create our visual ghost layer
   const ghost = document.createElement('div');
   ghost.className = `piece-ghost p${player}`;
   ghost.style.cssText = `
@@ -849,32 +891,26 @@ function animateSlide(player, fromLabel, path, onDone) {
     transition: none;
   `;
 
-  // 2. Fetch structural path milestones
   const start = cellCenter(fromLabel);
   const end   = cellCenter(finalLabel);
 
-  // 3. Pin initial coordinates into position
   const startX = start.x - pieceSize / 2;
   const startY = start.y - pieceSize / 2;
   ghost.style.transform = `translate3d(${startX}px, ${startY}px, 0)`;
   document.body.appendChild(ghost);
 
-  // 4. Ghost the static cell rendering out of view instantly
   const srcPieceEl = srcCell.querySelector('.piece');
   if (srcPieceEl) srcPieceEl.style.opacity = '0';
 
-  // 5. Force browser DOM reflow layout flush so it captures the base position
-  ghost.offsetHeight;
+  ghost.offsetHeight; // Flush layout reflow
 
-  // 6. Fire single-pass hardware transition interpolation 
-  const SLIDE_DURATION = 240; // Total slide duration in milliseconds
+  const SLIDE_DURATION = 240;
   ghost.style.transition = `transform ${SLIDE_DURATION}ms cubic-bezier(0.25, 1, 0.5, 1)`;
   
   const endX = end.x - pieceSize / 2;
   const endY = end.y - pieceSize / 2;
   ghost.style.transform = `translate3d(${endX}px, ${endY}px, 0)`;
 
-  // 7. Houseclean and hands turn over to logic pass
   setTimeout(() => {
     ghost.remove();
     state.animating = false;
@@ -934,7 +970,7 @@ function applyMove(fromLabel, move) {
     pushTimeline();
 
     const n = visibleEnemies.length;
-    setStatus(`Halted — ${n} enemy piece${n !== 1 ? 's' : ''} spotted.`);
+    setStatus(`Halted. ${n} enemy piece${n !== 1 ? 's' : ''} spotted.`);
     setTimeout(() => { state.losSquares = []; render(); checkTurnPassing(); }, 1200);
 
   } else {
@@ -946,7 +982,7 @@ function applyMove(fromLabel, move) {
     state.history.add(serialiseState(state.pieces, state.currentPlayer));
     render();
     pushTimeline();
-    setStatus('Sneaking Combo — no enemies spotted, move again!', 'sneaking');
+    setStatus('Chain Move: no enemies spotted, move again.', 'sneaking');
 
     if (!vsAI || state.currentPlayer === humanPlayerColor) selectPiece(move.landing);
     checkTurnPassing();
@@ -1014,7 +1050,6 @@ function restartGame(forceResetColor = false) {
       humanPlayerColor = 1;
       humanStreak = 0;
     } else {
-      // Alternate pieces naturally between game cycles
       humanPlayerColor = humanPlayerColor === 1 ? 2 : 1;
     }
   }
@@ -1119,7 +1154,6 @@ class SimState {
 
     this.history.add(serialiseState(this.pieces, this.currentPlayer));
 
-    // Automated Turn Skip Check
     if (!currentPlayerHasLegalMoves(this.pieces, this.currentPlayer, this.sneaking, this.sneakingSquare, this.history)) {
       this.sneaking = false;
       this.sneakingSquare = null;
@@ -1141,7 +1175,7 @@ class MCTSNode {
   constructor(simState, parent, leadingMove) {
     this.state = simState;
     this.parent = parent;
-    this.move = leadingMove; // format: { from, move }
+    this.move = leadingMove;
     this.children = [];
     this.wins = 0;
     this.visits = 0;
@@ -1190,7 +1224,6 @@ class AdvancedEngineMCTS {
         for (const oppAction of oppMoves) {
           const oppState = temp.clone();
           oppState.makeMove(oppAction.from, oppAction.move);
-          // If the opponent answers, can we instantly lock a win on ply 3?
           if (!this.findImmediateWin(oppState, player)) {
             forced = false;
             break;
@@ -1229,22 +1262,29 @@ class AdvancedEngineMCTS {
     return safeOptions.length > 0 ? safeOptions[Math.floor(Math.random() * safeOptions.length)] : null;
   }
 
-  search() {
+  search(streakLevel) {
     const currentSimState = this.root.state;
     if (currentSimState.getValidMoves().length === 0) return null;
 
-    // Lookahead Tier 1: Pull out immediate winning vectors
+    // Lookahead Tier 1: Pull out immediate winning vectors (Always active)
     const win1 = this.findImmediateWin(currentSimState, this.aiPlayer);
     if (win1) return win1;
 
-    // Lookahead Tier 2: Pull out guaranteed forced wins in 2 cycles
-    const win2 = this.findWinIn2(currentSimState, this.aiPlayer);
-    if (win2) return win2;
+    // DIFFICULTY THRESHOLD NERF MODULATION
+    // If streak is 0, skip deep safety logic to allow easy human wins
+    let win2 = null;
+    let safeMove = null;
 
-    // Lookahead Tier 3: Verify and dodge immediate trap moves
-    const safeMove = this.findSafeMove(currentSimState);
+    if (streakLevel >= 2) {
+      win2 = this.findWinIn2(currentSimState, this.aiPlayer);
+      if (win2) return win2;
+    }
 
-    // Lookahead Tier 4: Tree simulation expansion
+    if (streakLevel >= 1) {
+      safeMove = this.findSafeMove(currentSimState);
+    }
+
+    // Tree Simulation Phase
     for (let i = 0; i < this.iterations; i++) {
       let node = this.select(this.root);
       if (!node.state.isGameOver && !node.isFullyExpanded()) {
@@ -1255,7 +1295,6 @@ class AdvancedEngineMCTS {
     }
 
     const bestChildNode = this.getBestChild(this.root);
-    // Fallback protection: if structural MCTS breaks or returns an unsafe move, favor safe options
     if (safeMove && bestChildNode) {
       const bestActionIsSafe = this.checkIfActionIsSafe(currentSimState, bestChildNode.move);
       if (!bestActionIsSafe) return safeMove;
@@ -1301,7 +1340,7 @@ class AdvancedEngineMCTS {
 
   simulate(simState) {
     let current = simState.clone();
-    const maxDepth = 12; // Balanced lookahead horizon
+    const maxDepth = 12;
     let depth = 0;
     while (!current.isGameOver && depth < maxDepth) {
       const valid = current.getValidMoves();
@@ -1344,13 +1383,30 @@ function triggerAIMove() {
 
   setTimeout(() => {
     const currentSimRoot = new SimState(state.pieces, state.currentPlayer, state.sneaking, state.sneakingSquare, state.history, state.gameOver, null);
-    
-    // Scale search scale based on consecutive human streak performance
-    const structuralIterations = 100 + (humanStreak * 150);
-    const boundedIterations = Math.min(structuralIterations, 1200); // Thread crash prevention ceiling
+    const validMoves = currentSimRoot.getValidMoves();
 
-    const processFinder = new AdvancedEngineMCTS(currentSimRoot, boundedIterations);
-    const optimalResult = processFinder.search();
+    if (validMoves.length === 0) {
+      checkTurnPassing();
+      return;
+    }
+
+    let optimalResult = null;
+
+    // Introduce human blundering frequencies at lower streaks
+    if (humanStreak === 0 && Math.random() < 0.40) {
+      // 40% chance of making an intentional casual mistake at Level 0
+      optimalResult = validMoves[Math.floor(Math.random() * validMoves.length)];
+    } else if (humanStreak === 1 && Math.random() < 0.15) {
+      // 15% chance of an error at Level 1
+      optimalResult = validMoves[Math.floor(Math.random() * validMoves.length)];
+    } else {
+      // Standard deep tree simulation with progression budgeting
+      const structuralIterations = 80 + (humanStreak * 180);
+      const boundedIterations = Math.min(structuralIterations, 1200);
+
+      const processFinder = new AdvancedEngineMCTS(currentSimRoot, boundedIterations);
+      optimalResult = processFinder.search(humanStreak);
+    }
 
     if (optimalResult) {
       const systemSlides = computeAllSlides(optimalResult.from, state.pieces);
@@ -1360,19 +1416,117 @@ function triggerAIMove() {
         executeMove(optimalResult.from, actualMatch);
       }
     } else {
-      // Emergency default out if deadlock passes fall through
       checkTurnPassing();
     }
   }, 400);
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  SECTION 11 — INITIALIZATION
+//  SECTION 11 — TUTORIAL INTERACTIVE MODAL COMPONENT
 // ═══════════════════════════════════════════════════════════════
 
+const TUTORIAL_PAGES = [
+  {
+    title: "The Goal",
+    text: "Create a straight line of <strong>three consecutive pieces</strong> of your color.<br></br> They can be oriented horizontally, vertically or diagonally, anywhere on the board."
+  },
+  {
+    title: "Movement Rules",
+    text: "Pieces move by <strong>sliding in straight lines</strong>. They slide until stopped by the edge of the board or some other piece.<br></br>  Only <strong> active pieces </strong>, outlined in yellow, can be moved."
+  },
+  {
+    title: "Line of Sight Rule",
+    text: "When your piece finishes its slide it halts. If it has direct <strong>line of sight</strong> to moveable enemy stones those enemy stones wake up and become <strong>active</strong>. <br></br> Your piece goes to sleep and turn passes to your opponent."
+  },
+  {
+    title: "Chain Rule",
+    text: "If your sliding piece halts and <strong>cannot see any enemies</strong>, you trigger a <strong>chain move</strong>. The piece remains active, your turn continues, and you must slide that same piece again immediately.<br></br>  You can chain multiple slides together until an enemy is spotted."
+  },
+  {
+    title: "The Novelty Rule",
+    text: "To prevent repetitive loops, you are forbidden from making a move that would repeat a previous game state. <br></br> If you have no legal moves, your turn ends and all enemy pieces activate. <br></br> Have fun!"
+  }
+];
+
+let currentTutorialPage = 0;
+
+function launchTutorial(onCloseCallback) {
+  currentTutorialPage = 0;
+  
+  const overlay = document.createElement('div');
+  overlay.className = 'tutorial-overlay';
+  overlay.id = 'tutorial-modal';
+  
+  overlay.innerHTML = `
+    <div class="tutorial-card">
+      <div class="tutorial-header">
+        <span class="tutorial-title" id="tut-title"></span>
+        <span class="tutorial-pages" id="tut-page-indicator"></span>
+      </div>
+      <div class="tutorial-body" id="tut-text"></div>
+      <div class="tutorial-footer">
+        <button class="tut-nav" id="tut-prev-btn">&lt; Prev</button>
+        <button class="tut-nav" id="tut-next-btn">Next &gt;</button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(overlay);
+  
+  const prevBtn = document.getElementById('tut-prev-btn');
+  const nextBtn = document.getElementById('tut-next-btn');
+  
+  function refreshPage() {
+    const data = TUTORIAL_PAGES[currentTutorialPage];
+    document.getElementById('tut-title').textContent = data.title;
+    document.getElementById('tut-text').innerHTML = data.text;
+    document.getElementById('tut-page-indicator').textContent = `${currentTutorialPage + 1} / ${TUTORIAL_PAGES.length}`;
+    
+    prevBtn.disabled = currentTutorialPage === 0;
+    if (currentTutorialPage === TUTORIAL_PAGES.length - 1) {
+      nextBtn.textContent = "Play Game!";
+    } else {
+      nextBtn.textContent = "Next >";
+    }
+  }
+  
+  prevBtn.addEventListener('click', () => {
+    if (currentTutorialPage > 0) { currentTutorialPage--; refreshPage(); }
+  });
+  
+  nextBtn.addEventListener('click', () => {
+    if (currentTutorialPage < TUTORIAL_PAGES.length - 1) {
+      currentTutorialPage++;
+      refreshPage();
+    } else {
+      overlay.remove();
+      if (onCloseCallback) onCloseCallback();
+    }
+  });
+  
+  refreshPage();
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  SECTION 12 — INITIALIZATION LOOP
+// ═══════════════════════════════════════════════════════════════
+
+let unlockedTutorialTrigger = null;
+
+// Trigger automatically if user has never played before
+if (!localStorage.getItem('sambaqui_seen_tutorial')) {
+  localStorage.setItem('sambaqui_seen_tutorial', 'true');
+  unlockedTutorialTrigger = () => {
+    pushTimeline();
+    render();
+  };
+  launchTutorial(unlockedTutorialTrigger);
+} else {
+  pushTimeline();
+  render();
+}
+
 updateMetaDisplay();
-pushTimeline();
-render();
 </script>
 </body>
 </html>
