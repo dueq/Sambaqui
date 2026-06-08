@@ -92,6 +92,29 @@
   .player-tag.p2 .dot { background: #2a1a0e; border-color: var(--sand3); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.15); }
   .turn-divider { width: 1px; height: 16px; background: var(--accent); opacity: 0.4; }
 
+  /* ── Shared slot: turn-bar and result-banner occupy the same fixed-height area ── */
+  .banner-zone {
+    position: relative;
+    width: 100%;
+    max-width: calc(var(--cell-size) * 5 + var(--gap) * 4 + clamp(20px, 4vw, 36px) + 4px);
+    height: calc(1.2em + 1.1rem); /* tall enough for the result-banner */
+    display: flex; align-items: center; justify-content: center;
+  }
+  .banner-zone .turn-bar,
+  .banner-zone #result-banner-slot {
+    position: absolute;
+    inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    width: 100%;
+  }
+  /* Banner slot is invisible when empty; turn-bar shows through */
+  .banner-zone #result-banner-slot:empty ~ .turn-bar,
+  .banner-zone .turn-bar { opacity: 1; }
+  /* When a banner is present, hide the turn-bar behind it */
+  .banner-zone #result-banner-slot:not(:empty) ~ .turn-bar { opacity: 0; pointer-events: none; }
+  /* result-banner fills the slot width */
+  #result-banner-slot .result-banner { width: 100%; max-width: none; }
+
   /* ── Status bar ── */
   .status {
     font-size: clamp(0.65rem, 1.8vw, 0.78rem); letter-spacing: 0.12em;
@@ -102,7 +125,7 @@
   .status.sneaking  { color: var(--teal); }
 
   /* ── Board ── */
-  .board-container-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .board-container-wrapper { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
   .board-border {
     padding: clamp(10px, 2vw, 18px); border: 2px solid var(--accent); border-radius: 8px;
     box-shadow: 0 0 0 1px rgba(196,154,68,0.15), 0 0 60px rgba(60,30,10,0.8), inset 0 0 30px rgba(0,0,0,0.3);
@@ -339,17 +362,18 @@
   </div>
   <div class="status" id="status">Selecione uma peça ativa para mover</div>
 
-  <div class="turn-bar">
-    <div class="player-tag p1 active" id="tag-p1"><div class="dot"></div><span id="label-p1">Jogador (Você)</span></div>
-    <div class="turn-divider"></div>
-    <div class="player-tag p2"        id="tag-p2"><div class="dot"></div><span id="label-p2">Computador</span></div>
-  </div>
-
   <div class="board-controls" id="nav-controls">
     <button id="undo-btn" class="nav-btn" title="Undo" disabled>◀</button>
     <button id="redo-btn" class="nav-btn" title="Redo" disabled>▶</button>
   </div>
-  <div id="result-banner-slot"></div>
+  <div class="banner-zone">
+    <div id="result-banner-slot"></div>
+    <div class="turn-bar">
+      <div class="player-tag p1 active" id="tag-p1"><div class="dot"></div><span id="label-p1">Jogador (Você)</span></div>
+      <div class="turn-divider"></div>
+      <div class="player-tag p2" id="tag-p2"><div class="dot"></div><span id="label-p2">Computador</span></div>
+    </div>
+  </div>
 </div>
 
 <footer>
@@ -359,7 +383,7 @@
     <span id="footer-share-link">↪ Compartilhar</span>
   </div>
   <div id="toast-msg"></div>
-  <div class="author">sambaqui 2026 v.1</div>
+  <div class="author">@eduardoeller - sambaqui v.1.1</div>
 </footer>
 
 <script>
@@ -403,9 +427,6 @@ const translations = {
     calculating: "Computer is calculating moves…",
     calculatingOpening: "Computer is calculating opening moves…",
     thinking: "Computer is thinking…",
-    stalemateDraw: "Stalemate Draw.",
-    stalemateDrawPositions: "Stalemate Draw — no remaining legal positions available.",
-    stalemateNoPositions: "Stalemate — no legal positions remain",
     playerWins: "Player {winner} wins!",
     playerWinsBanner: "Player {winner} wins",
     humanWinsStreakBanner: "You won {streak} game{plural}.",
@@ -424,13 +445,11 @@ const translations = {
     victoryOverlayTitle: "Victory!",
     victoryLevelComplete: "Level {humanStreak} Complete",
     nextRound: "Next Round",
-    advanceNextRound: "Advance to Next Round",
-    stalematePreserved: "Your win streak of {humanStreak} is preserved! Switching pieces for the next match.",
     gamesWon: "Game{plural} Won!",
     bestScore: "Best Score: <strong>{highScore}</strong>",
-    share: "↪ Share Game",
-    supportLink: "♥ Support",
-    shareLink: "↪ Share Game",
+    share: "↪ Share the Game",
+    supportLink: "♥ Support the game",
+    shareLink: "↪ Share the Game",
     linkCopied: "Link copied to clipboard!",
     tutorialNext: "Next >",
     tutorialPrev: "< Prev",
@@ -457,9 +476,6 @@ const translations = {
     calculating: "Computador calculando movimentos…",
     calculatingOpening: "Computador calculando jogadas de abertura…",
     thinking: "Computador pensando…",
-    stalemateDraw: "Empate por afogamento.",
-    stalemateDrawPositions: "Empate — não restam posições válidas disponíveis.",
-    stalemateNoPositions: "Empate — não restam posições válidas",
     playerWins: "Jogador {winner} venceu!",
     playerWinsBanner: "Jogador {winner} venceu",
     humanWinsStreakBanner: "Você venceu {streak} jogo{plural}.",
@@ -478,12 +494,10 @@ const translations = {
     victoryOverlayTitle: "Vitória!",
     victoryLevelComplete: "Nível {humanStreak} Concluído",
     nextRound: "Próximo Nível",
-    advanceNextRound: "Avançar para o Próximo Turno",
-    stalematePreserved: "Sua sequência de {humanStreak} vitórias foi preservada! Trocando as peças para a próxima partida.",
     gamesWon: "Jogo{plural} Vencido{plural}!",
     bestScore: "Melhor Pontuação: <strong>{highScore}</strong>",
-    share: "↪ Compartilhar",
-    supportLink: "♥ Apoiar",
+    share: "↪ Compartilhar o jogo",
+    supportLink: "♥ Apoiar o jogo",
     shareLink: "↪ Compartilhar",
     linkCopied: "Link copiado para a área de transferência!",
     tutorialNext: "Próximo >",
@@ -592,7 +606,19 @@ function checkVictory(pieces) {
     for (let i = 1; i < line.length; i++) {
       if (!pieces[line[i]] || pieces[line[i]].player !== pId) { match = false; break; }
     }
-    if (match) return { winner: pId, line: line };
+    if (match) {
+      // Fix 2: if ALL pieces of the winner are part of some winning line, mark them all
+      const allWinnerSquares = Object.keys(pieces).filter(sq => pieces[sq].player === pId);
+      const squaresInAnyLine = new Set();
+      for (const wLine of ALL_LINES) {
+        if (wLine.length < 3) continue;
+        const allMatch = wLine.every(sq => pieces[sq] && pieces[sq].player === pId);
+        if (allMatch) wLine.forEach(sq => squaresInAnyLine.add(sq));
+      }
+      const allInLine = allWinnerSquares.every(sq => squaresInAnyLine.has(sq));
+      const fullLine = allInLine ? allWinnerSquares : line;
+      return { winner: pId, line: fullLine };
+    }
   }
   return null;
 }
@@ -694,7 +720,7 @@ function pushTimeline() {
     history: new Set(state.history),
     gameOver: state.gameOver,
     winLine: state.winLine ? [...state.winLine] : null,
-    winner: victoryNow ? victoryNow.winner : (state.gameOver ? 'Draw' : null)
+    winner: victoryNow ? victoryNow.winner : null
   });
   timelineIndex++;
 }
@@ -723,7 +749,7 @@ function restoreTimeline(idx) {
     if (victory) {
       showResultBanner(victory.winner);
       if (!vsAI) {
-        setStatus(victory.winner === 'Draw' ? t('stalemateDraw') : t('playerWins', { winner: victory.winner }), victory.winner === 'Draw' ? 'warn' : true);
+        setStatus(t('playerWins', { winner: victory.winner }), true);
       } else {
         if (victory.winner === humanPlayerColor) {
           if (humanPlayerColor === 1) {
@@ -747,9 +773,6 @@ function restoreTimeline(idx) {
           setStatus(currentLang === 'PT' ? `Computador Venceu. Pontuação final: ${humanStreak}` : `Computer Wins. Final score: ${humanStreak}`, 'warn');
         }
       }
-    } else {
-      showResultBanner('Draw');
-      setStatus(t('stalemateDraw'), 'warn');
     }
   } else {
     clearResultBanner();
@@ -789,7 +812,7 @@ function showResultBanner(winner) {
     text = t('humanWinsStreakBanner', { streak: humanStreak, plural: pluralStr });
     btnText = t('newGame');
   } else {
-    text = winner === 'Draw' ? t('stalemateNoPositions') : t('playerWinsBanner', { winner: winner });
+    text = t('playerWinsBanner', { winner: winner });
   }
 
   banner.innerHTML = `
@@ -1079,17 +1102,8 @@ function checkTurnPassing() {
     return;
   }
 
+  // No legal moves: turn ends, all enemy pieces activate
   const oppositePlayer = state.currentPlayer === 1 ? 2 : 1;
-  const oppositeHasMoves = currentPlayerHasLegalMoves(state.pieces, oppositePlayer, false, null, state.history);
-
-  if (!oppositeHasMoves) {
-    state.gameOver = true;
-    render();
-    pushTimeline();
-    setTimeout(() => showVictory('Draw'), 600);
-    return;
-  }
-
   const passedFrom = state.currentPlayer;
   for (const [sq, p] of Object.entries(state.pieces)) {
     if (p.player === oppositePlayer) state.pieces[sq] = { ...p, active: true };
@@ -1116,23 +1130,7 @@ function showVictory(winner) {
 
   if (!vsAI) {
     if (state.winLine) state.winLine._winner = winner;
-    setStatus(winner === 'Draw' ? t('stalemateDraw') : t('playerWins', { winner: winner }), winner === 'Draw' ? 'warn' : true);
-    return;
-  }
-
-  if (winner === 'Draw') {
-    const overlay = document.createElement('div');
-    overlay.className = 'victory-overlay';
-    overlay.innerHTML = `
-      <div class="victory-title">${t('stalemateDraw')}</div>
-      <div class="victory-sub">${t('stalematePreserved', { humanStreak: humanStreak })}</div>
-      <button class="generic-btn" id="next-round-btn">${t('advanceNextRound')}</button>
-    `;
-    document.body.appendChild(overlay);
-    document.getElementById('next-round-btn').addEventListener('click', (e) => {
-      e.stopPropagation();
-      restartGame(false);
-    });
+    setStatus(t('playerWins', { winner: winner }), true);
     return;
   }
 
@@ -1261,18 +1259,11 @@ class SimState {
 
     if (!currentPlayerHasLegalMoves(this.pieces, this.currentPlayer, this.sneaking, this.sneakingSquare, this.history)) {
       const opp = this.currentPlayer === 1 ? 2 : 1;
-      if (currentPlayerHasLegalMoves(this.pieces, opp, false, null, this.history)) {
-        for (const sq in this.pieces) if (this.pieces[sq].player === opp) this.pieces[sq].active = true;
-        this.currentPlayer = opp;
-        this.sneaking = false;
-        this.sneakingSquare = null;
-        this.history.add(serialiseState(this.pieces, this.currentPlayer));
-        if (!currentPlayerHasLegalMoves(this.pieces, this.currentPlayer, false, null, this.history)) {
-          this.isGameOver = true; this.winner = 'Draw';
-        }
-      } else {
-        this.isGameOver = true; this.winner = 'Draw';
-      }
+      for (const sq in this.pieces) if (this.pieces[sq].player === opp) this.pieces[sq].active = true;
+      this.currentPlayer = opp;
+      this.sneaking = false;
+      this.sneakingSquare = null;
+      this.history.add(serialiseState(this.pieces, this.currentPlayer));
     }
   }
 }
@@ -1424,7 +1415,7 @@ class AdvancedEngineMCTS {
     let depth = 0;
     while (!current.isGameOver && depth < maxDepth) {
       const valid = current.getValidMoves();
-      if (valid.length === 0) { current.isGameOver = true; current.winner = 'Draw'; break; }
+      if (valid.length === 0) break; // makeMove handles pass; if truly stuck, stop simulation
       const action = valid[Math.floor(Math.random() * valid.length)];
       current.makeMove(action.from, action.move);
       depth++;
@@ -1434,8 +1425,7 @@ class AdvancedEngineMCTS {
   backpropagate(node, winner) {
     while (node !== null) {
       node.visits++;
-      if (winner === 'Draw') node.wins += 0.5;
-      else if (node.playerJustMoved && winner === node.playerJustMoved) node.wins += 1;
+      if (node.playerJustMoved && winner === node.playerJustMoved) node.wins += 1;
       node = node.parent;
     }
   }
@@ -1520,6 +1510,14 @@ function launchTutorial(onCloseCallback) {
   `;
   document.body.appendChild(overlay);
 
+  // Fix 1b: clicking outside the card closes the tutorial
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      overlay.remove();
+      refreshTutorialPage = null;
+    }
+  });
+
   let currentTutorialPage = 0;
   const titleEl = overlay.querySelector('#tut-title');
   const bodyEl = overlay.querySelector('#tut-body');
@@ -1580,19 +1578,9 @@ function launchTutorial(onCloseCallback) {
 
 let unlockedTutorialTrigger = null;
 
-if (!localStorage.getItem('sambaqui_seen_tutorial')) {
-  localStorage.setItem('sambaqui_seen_tutorial', 'true');
-  unlockedTutorialTrigger = () => {
-    pushTimeline();
-    render();
-    updateMetaDisplay();
-  };
-  setTimeout(() => launchTutorial(unlockedTutorialTrigger), 200);
-} else {
-  pushTimeline();
-  render();
-  updateMetaDisplay();
-}
+pushTimeline();
+render();
+updateMetaDisplay();
 
 function render() {
   const humanTurn = state.currentPlayer === humanPlayerColor || !vsAI;
@@ -1806,15 +1794,28 @@ function applyLanguageSwitch() {
         }
         setStatus(currentLang === 'PT' ? `Computador Venceu. Pontuação final: ${humanStreak}` : `Computer Wins. Final score: ${humanStreak}`, 'warn');
       }
-    } else if (!state.winLine) {
-      setStatus(t('stalemateDraw'));
+    } else if (!vsAI) {
+      setStatus(t('playerWins', { winner: checkVictory(state.pieces)?.winner ?? '' }), true);
     }
   } else if (state.sneaking) {
     setStatus(t('chainNoEnemies'), 'sneaking');
   } else if (vsAI && state.currentPlayer !== humanPlayerColor) {
     setStatus(t('thinking'), 'highlight');
   } else if (state.selectedSquare) {
-    selectPiece(state.selectedSquare);
+    // Retranslate status text only — do NOT call selectPiece (mutates state + renders)
+    const raw = state.currentMoves;
+    const free = raw.filter(m => !m.blocked).length;
+    const blocked = raw.filter(m => m.blocked).length;
+    if (raw.length === 0) {
+      setStatus(t('noMovesAvailable', { label: state.selectedSquare }));
+    } else if (free === 0) {
+      setStatus(t('forbiddenByNovelty', { label: state.selectedSquare, blocked }), 'warn');
+    } else {
+      const suffix = blocked > 0 ? t('forbiddenSuffix', { blocked }) : '';
+      const prefix = state.sneaking ? t('chainMovePrefix') : '';
+      const pluralStr = free !== 1 ? 's' : '';
+      setStatus(t('legalMoves', { prefix, label: state.selectedSquare, free, plural: pluralStr, suffix }), state.sneaking ? 'sneaking' : true);
+    }
   } else {
     setStatus(t('selectActive'));
   }
@@ -1830,7 +1831,7 @@ function applyLanguageSwitch() {
         const pluralStr = humanStreak !== 1 ? 's' : '';
         bannerTextEl.textContent = t('humanWinsStreakBanner', { streak: humanStreak, plural: pluralStr });
       } else {
-        bannerTextEl.textContent = winner === 'Draw' ? t('stalemateNoPositions') : t('playerWinsBanner', { winner: winner });
+        bannerTextEl.textContent = t('playerWinsBanner', { winner: winner });
       }
     }
     if (bannerBtnEl) bannerBtnEl.textContent = t('newGame');
