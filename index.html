@@ -28,17 +28,31 @@
     --gap:        clamp(3px, 0.6vw, 6px);
   }
 
-  body {
-    min-height: 100vh;
-    background-color: var(--dark);
-    background-image:
-      radial-gradient(ellipse 80% 60% at 50% 0%, #2e1f0e 0%, transparent 70%),
-      repeating-linear-gradient(0deg,  transparent, transparent 3px, rgba(255,255,255,0.012) 3px, rgba(255,255,255,0.012) 4px),
-      repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(255,255,255,0.012) 3px, rgba(255,255,255,0.012) 4px);
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    font-family: 'Lato', serif; color: var(--sand);
-    padding: 2rem 1rem; gap: 1.2rem;
-  }
+body {
+  min-height: 100vh;
+  background-color: #412a0f;
+  background-image:
+    radial-gradient(ellipse 120% 40% at 50% -5%, rgba(180, 140, 60, 0.01) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 30% at 50% 0%, #563a0a 0%, transparent 55%),
+    radial-gradient(ellipse 100% 100% at 50% 50%, transparent 50%, rgba(10, 6, 2, 0.6) 100%),
+    repeating-linear-gradient(
+      135deg,
+      transparent,
+      transparent 2px,
+      rgba(116, 86, 16, 0.10) 2px,
+      rgba(210, 170, 80, 0.03) 3px
+    ),
+    repeating-linear-gradient(
+      30deg,
+      transparent,
+      transparent 4px,
+      rgba(180, 130, 40, 0.025) 4px,
+      rgba(180, 130, 40, 0.025) 5px
+    );
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-family: 'Lato', serif; color: var(--sand);
+  padding: 2rem 1rem; gap: 1.2rem;
+}
 
   body.clickable-restart {
     cursor: pointer !important;
@@ -200,12 +214,12 @@
   .cell.blocked-landing       { border-color: rgba(180,80,40,0.5); background-color: rgba(180,80,40,0.07); cursor: not-allowed; }
   .cell.dark-sq.blocked-landing { background-color: rgba(180,80,40,0.11); }
   .cell.los-target            { color: rgba(229, 180, 119, 0.944); }
-  .cell.win-line              { border-color: var(--gold) !important; background-color: rgba(196,154,68,0.22) !important; animation: win-flash 0.7s ease-in-out 3; }
-  .cell.dark-sq.win-line      { background-color: rgba(196,154,68,0.28) !important; }
+  .cell.win-line              { border-color: var(--gold) !important; background-color: rgba(241, 163, 7, 0.762) !important;  }
+  .cell.dark-sq.win-line      { background-color: rgba(241, 163, 7, 0.762) !important;}
 
   @keyframes win-flash {
-    0%,100% { background-color: rgba(196,154,68,0.22); }
-    50%     { background-color: rgba(196,154,68,0.42); }
+    0%,100% { background-color: rgba(236, 218, 182, 0.805); }
+    50%     { background-color: rgba(122, 90, 25, 0.715); }
   }
 
   .cell-label {
