@@ -56,12 +56,12 @@
   /* ── Stats Bar ── */
   .stats-bar {
     font-family: 'Macondo';
-    display: flex; gap: 1.3rem; font-size: clamp(1.4rem, 1.4rem, 0.8vw);
+    display: flex; gap: 2rem; font-size: clamp(1rem, 1rem);
     letter-spacing: 0.1em; background: rgba(0,0,0,0.2);
-    padding: 0.4rem 1.2rem; border-radius: 10px; border: 2px solid rgba(211, 105, 23, 0.3);
+    padding: 0.4rem 1.2rem; border-radius: 20px; border: 2px solid rgba(211, 105, 23, 0.3);
   }
   .stats-bar strong { color: var(--gold); }
-
+  
   /* ── Mode & Help toggles ── */
   .menu-controls { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; }
   .mode-bar {
@@ -353,13 +353,6 @@
   <h1>sambaqui</h1>
 </header>
 
-<div class="menu-controls">
-  <div class="mode-bar">
-    <button class="mode-btn" id="mode-toggle">Treinar</button>
-    <button class="mode-btn" id="open-tutorial-btn">Como Jogar</button>
-    <button class="mode-btn"        id="lang-toggle-btn">EN</button>
-  </div>
-</div>
   <div class="board-controls" id="nav-controls">
     <button id="undo-btn" class="nav-btn" title="Undo" disabled>◀</button>
     <button id="redo-btn" class="nav-btn" title="Redo" disabled>▶</button>
@@ -371,12 +364,19 @@
   <div><span id="stat-best-label">Melhor</span> <strong id="stat-high">0</strong></div>
 </div>
 
+<div class="menu-controls">
+  <div class="mode-bar">
+    <button class="mode-btn" id="mode-toggle">Treinar</button>
+    <button class="mode-btn" id="open-tutorial-btn">Como Jogar</button>
+    <button class="mode-btn"        id="lang-toggle-btn">EN</button>
+  </div>
+</div>
+
+
 <div class="board-container-wrapper">
   <div class="board-border">
     <div class="board-wrapper" id="board"></div>
   </div>
-  <div class="status" id="status">Selecione uma peça ativa para mover</div>
-
 
   <div class="banner-zone">
     <div id="result-banner-slot"></div>
@@ -387,6 +387,11 @@
     </div>
   </div>
 </div>
+
+  <div class="status" id="status">Selecione uma peça ativa para mover</div>
+
+
+
 
 <footer>
   <div class="links">
@@ -477,8 +482,7 @@ const translations = {
       { title: "Line of Sight Rule", text: "As soon as your piece <strong>stops</strong>, moveable enemy stones in its <strong>line of sight</strong> wake up and become <strong>active</strong>. <br></br> Your piece goes to sleep and turn passes to your opponent." },
       { title: "The Chain Rule", text: "If a sliding piece halts and <strong>cannot see any enemies</strong> the <strong>chain move</strong> is triggered. The piece remains active and must be moved again immediately." },
       { title: "The Novelty Rule", text: "Moves that would repeat a previous game state are not allowed. If you have no legal moves left, your turn ends and all enemy pieces activate." },
-      { title: "About the Game", text: "This game is named after ancient shell mounds found along the coast of Brazil. It draws inspiration from games like Cidade Dorme, Bejeweled, Zuma and Ultimate Tic-Tac-Toe. Have fun playing it!" }
-    ]
+   ]
   },
   PT: {
     newGame: "vs Máquina",
@@ -525,11 +529,10 @@ const translations = {
     tutorialPlay: "Jogar!",
     tutorialPages: [
       { title: "Objetivo", text: "Alinhe <strong>três peças consecutivas</strong> da sua cor.<br></br> O trio pode ser colocado em qualquer lugar do tabuleiro, orientado horizontalmente, verticalmente ou diagonalmente." },
-      { title: "Regras de Movimento", text: "Apenas <strong>peças ativas</strong> podem se mover.<br></br> As peças movem-se <strong>deslizando em linha reta</strong> até serem paradas pela borda do tabuleiro ou por outra peça." },
+      { title: "Regras de Movimento", text: "Apenas <strong>peças ativas</strong> podem se mover.<br></br> As peças <strong>deslizam em linha reta</strong> até serem bloqueadas pela borda do tabuleiro ou por outra peça." },
       { title: "Linha de Visão", text: "Assim que sua peça <strong>para</strong>, as pedras inimigas móveis na sua <strong>linha de visão</strong> acordam e tornam-se <strong>ativas</strong>.<br></br> Sua peça dorme e o turno passa para o oponente." },
       { title: "Regra da Cadeia", text: "Se uma peça parar e <strong>não avistar nenhum inimigo</strong>, o <strong>movimento em cadeia</strong> é ativado. A peça continua ativa e deve ser movida novamente." },
-      { title: "Regra da Novidade", text: "Movimentos que repetiriam um estado de jogo anterior não são permitidos. Se você ficar sem movimentos válidos, seu turno termina e todas as peças inimigas são ativadas." },
-      { title: "Sobre o Jogo", text: "Este jogo recebe o nome dos antigos amontoados de conchas encontrados na costa do Brasil. É inspirado em jogos como Cidade Dorme, Bejeweled, Zuma e Ultimate Tic-Tac-Toe. Divirta-se!" }
+      { title: "Regra da Novidade", text: "Movimentos que repetiriam um estado de jogo anterior não são permitidos. Se você ficar sem movimentos válidos, seu turno termina e todas as peças inimigas são ativadas." },   
     ]
   }
 };
