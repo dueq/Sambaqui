@@ -30,24 +30,22 @@
 
 body {
   min-height: 100vh;
-  background-color: #412a0f;
+  background-color: #241a0e;
   background-image:
-    radial-gradient(ellipse 120% 40% at 50% -5%, rgba(180, 140, 60, 0.01) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 30% at 50% 0%, #563a0a 0%, transparent 55%),
-    radial-gradient(ellipse 100% 100% at 50% 50%, transparent 50%, rgba(10, 6, 2, 0.6) 100%),
-    repeating-linear-gradient(
+      radial-gradient(ellipse 60% 30% at 50% 0%, #5d3d073d 0%, transparent 100%),
+       repeating-linear-gradient(
       135deg,
       transparent,
       transparent 2px,
-      rgba(116, 86, 16, 0.10) 2px,
+      rgba(116, 86, 16, 0.02) 2px,
       rgba(210, 170, 80, 0.03) 3px
     ),
     repeating-linear-gradient(
       30deg,
       transparent,
       transparent 4px,
-      rgba(180, 130, 40, 0.025) 4px,
-      rgba(180, 130, 40, 0.025) 5px
+      rgba(100, 78, 36, 0.01) 4px,
+      rgba(115, 85, 31, 0.01) 5px
     );
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   font-family: 'Lato', serif; color: var(--sand);
@@ -64,7 +62,7 @@ body {
   /* ── Header ── */
   header { text-align: center; }
   h1 {
-    font-size: clamp(2.2rem, 12vw, 4.6rem); font-weight: 100;
+    font-size: clamp(2.2rem, 12vw, 4.6rem);
     letter-spacing: 0.06em; color: var(--gold);
     text-shadow: 0 0 40px rgba(196,154,68,0.3); line-height: 1;
     font-family: 'Macondo';
@@ -214,8 +212,8 @@ body {
   .cell.blocked-landing       { border-color: rgba(180,80,40,0.5); background-color: rgba(180,80,40,0.07); cursor: not-allowed; }
   .cell.dark-sq.blocked-landing { background-color: rgba(180,80,40,0.11); }
   .cell.los-target            { color: rgba(229, 180, 119, 0.944); }
-  .cell.win-line              { border-color: var(--gold) !important; background-color: rgba(241, 163, 7, 0.762) !important;  }
-  .cell.dark-sq.win-line      { background-color: rgba(241, 163, 7, 0.762) !important;}
+  .cell.win-line              { border-color: var(--gold) !important; background-color: rgba(194, 135, 19, 0.762) !important;  }
+  .cell.dark-sq.win-line      { background-color: rgba(175, 125, 25, 0.762) !important;}
 
   @keyframes win-flash {
     0%,100% { background-color: rgba(236, 218, 182, 0.805); }
@@ -914,10 +912,12 @@ for (let r = 0; r < 5; r++) {
     const cell = document.createElement('div');
     cell.className = 'cell' + (((r + c) % 2 === 1) ? ' dark-sq' : '');
     
-    const coord = document.createElement('div');
-    coord.className = 'cell-label';
-    coord.textContent = label;
-    cell.appendChild(coord);
+if (!vsAI) {
+      const coord = document.createElement('div');
+      coord.className = 'cell-label';
+      coord.textContent = label;
+      cell.appendChild(coord);
+    }
     
     cell.addEventListener('click', () => handleSquareClick(label));
     row.appendChild(cell);
@@ -1634,11 +1634,12 @@ function render() {
     cell.className = 'cell' + (((labelToRC(label)[0] + labelToRC(label)[1]) % 2 === 1) ? ' dark-sq' : '');
     cell.innerHTML = '';
 
-    const coord = document.createElement('div');
-    coord.className = 'cell-label';
-    coord.textContent = label;
-    cell.appendChild(coord);
-
+    if (!vsAI) {
+      const coord = document.createElement('div');
+      coord.className = 'cell-label';
+      coord.textContent = label;
+      cell.appendChild(coord);
+    }
     const isSelected = state.selectedSquare === label;
     const move = state.currentMoves.find(m => m.landing === label);
 
