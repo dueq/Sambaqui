@@ -169,6 +169,46 @@ body {
   .nav-btn:hover:not(:disabled) { background: var(--accent); border-color: var(--gold); color: #fff; }
   .nav-btn:disabled { opacity: 1; cursor: not-allowed; box-shadow: none; }
 
+  /* ── Move log ── */
+  .move-log {
+    flex: 1; overflow-x: auto; display: flex; align-items: center;
+    gap: 0.35rem; padding: 0 0.5rem;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    height: 35px;
+    background: rgba(0,0,0,0.18); border: 1px solid rgba(122,79,46,0.35);
+    border-radius: 6px; box-shadow: inset 0 1px 4px rgba(0,0,0,0.3);
+    min-width: 0;
+  }
+  .move-log::-webkit-scrollbar { display: none; }
+  .move-log-empty {
+    font-size: 0.62rem; letter-spacing: 0.1em; color: var(--accent); opacity: 0.5;
+    white-space: nowrap; padding: 0 0.3rem;
+  }
+  .move-log-entry {
+    display: flex; align-items: center; gap: 0.22rem;
+    font-size: 0.68rem; letter-spacing: 0.08em; color: var(--sand);
+    white-space: nowrap; flex-shrink: 0;
+    padding: 0.1rem 0.28rem; border-radius: 4px;
+    transition: opacity 0.15s;
+  }
+  .move-log-entry.future { opacity: 0.28; }
+  .move-log-entry.current { background: rgba(196,154,68,0.12); }
+  .move-log-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+  .move-log-dot.p1 {
+    background: radial-gradient(circle at 38% 32%, #f5f0e8, #c8bfad 55%, #a89f90);
+    border: 1px solid rgba(196,154,68,0.5);
+  }
+  .move-log-dot.p2 {
+    background: radial-gradient(circle at 38% 32%, #5a3e28, #2a1a0e 55%, #1a0d05);
+    border: 1px solid rgba(184,169,138,0.3);
+  }
+  .move-log-divider {
+    width: 1px; height: 14px; background: var(--accent); opacity: 0.25; flex-shrink: 0;
+  }
+
   /* ── Result banner ── */
   .result-banner {
     display: flex; align-items: center; justify-content: center; gap: 1.2rem;
@@ -370,6 +410,7 @@ body {
 
   <div class="board-controls" id="nav-controls">
     <button id="undo-btn" class="nav-btn" title="Undo" disabled>◀</button>
+    <div class="move-log" id="move-log"></div>
     <button id="redo-btn" class="nav-btn" title="Redo" disabled>▶</button>
   </div>
 
@@ -453,7 +494,7 @@ let currentLang = localStorage.getItem('sambaqui_lang') || 'PT';
 
 const translations = {
   EN: {
-    newGame: "Vs Machine",
+    newGame: "Computer",
     practice: "Solo Mode",
     tutorial: "How to Play",
     language: "Português",
@@ -505,7 +546,7 @@ const translations = {
    ]
   },
   PT: {
-    newGame: "Vs Máquina",
+    newGame: "Computador",
     practice: "Modo Solo",
     tutorial: "Como Jogar",
     language: "English",
@@ -753,6 +794,7 @@ state.history.add(serialiseState(state.pieces, state.currentPlayer));
 
 const timeline = [];
 let timelineIndex = -1;
+const moveLog = []; // { player, from, to } per half-move, length === timelineIndex at end of game
 
 function pushTimeline() {
   if (timelineIndex < timeline.length - 1) timeline.splice(timelineIndex + 1);
@@ -852,7 +894,9 @@ function showResultBanner(winner) {
   let text = '';
   let btnText = t('startNewGame');
   
-  if (vsAI && winner === humanPlayerColor) {
+  if (!vsAI) {
+    text = t('playerWinsBanner', { winner: winner });
+  } else if (winner === humanPlayerColor) {
     const pluralStr = humanStreak !== 1 ? 's' : '';
     text = t('humanWinsStreakBanner', { streak: humanStreak, plural: pluralStr });
     btnText = t('nextRound');
@@ -933,6 +977,82 @@ function updateNavButtons() {
     navControls.classList.remove('hidden');
     undoBtn.disabled = (timelineIndex <= 0 || state.animating);
     redoBtn.disabled = (timelineIndex >= timeline.length - 1 || state.animating);
+  }
+  renderMoveLog();
+}
+
+const moveLogEl = document.getElementById('move-log');
+
+function renderMoveLog() {
+  if (!moveLogEl) return;
+  moveLogEl.innerHTML = '';
+
+  if (moveLog.length === 0) {
+    const empty = document.createElement('span');
+    empty.className = 'move-log-empty';
+    empty.textContent = '—';
+    moveLogEl.appendChild(empty);
+    return;
+  }
+
+  // timelineIndex corresponds to the state *after* moveLog[timelineIndex-1] was played.
+  // Entries 0..timelineIndex-1 are played; timelineIndex..end are the redo tail.
+
+  // For each move, check whether any other active piece of the same player
+  // could also have slid to the same landing square from the pre-move position.
+  // Both the active set and piece positions are captured in the log entry itself,
+  // so this is independent of timeline indexing.
+  function needsDisambiguation(i) {
+    const entry = moveLog[i];
+    const pieces = entry.piecesSnapshot;
+    if (!pieces) return false;
+    const activeSet = new Set(entry.activePeers);
+    let count = 0;
+    for (const sq of activeSet) {
+      if (sq === entry.from) { count++; continue; }
+      const slides = computeAllSlides(sq, pieces);
+      if (slides.some(m => m.landing === entry.to)) count++;
+      if (count > 1) return true;
+    }
+    return false;
+  }
+
+  let lastActiveEl = null;
+  for (let i = 0; i < moveLog.length; i++) {
+    if (i > 0) {
+      const div = document.createElement('div');
+      div.className = 'move-log-divider';
+      moveLogEl.appendChild(div);
+    }
+
+    const entry = moveLog[i];
+    const el = document.createElement('div');
+    const isFuture = i >= timelineIndex;
+    const isCurrent = i === timelineIndex - 1;
+    el.className = 'move-log-entry' +
+      (isFuture ? ' future' : '') +
+      (isCurrent ? ' current' : '');
+
+    const dot = document.createElement('div');
+    dot.className = `move-log-dot p${entry.player}`;
+
+    const label = document.createElement('span');
+    const disambig = needsDisambiguation(i);
+    label.textContent = disambig ? entry.from.toLowerCase() + entry.to : entry.to;
+
+    el.appendChild(dot);
+    el.appendChild(label);
+    moveLogEl.appendChild(el);
+
+    if (isCurrent) lastActiveEl = el;
+  }
+
+  // Scroll the current (last active) entry into view within the bar
+  const target = lastActiveEl || (moveLog.length > 0 ? moveLogEl.lastElementChild : null);
+  if (target) {
+    const containerLeft = moveLogEl.getBoundingClientRect().left;
+    const targetLeft = target.getBoundingClientRect().left;
+    moveLogEl.scrollLeft += targetLeft - containerLeft - moveLogEl.clientWidth / 2 + target.offsetWidth / 2;
   }
 }
 
@@ -1079,6 +1199,17 @@ function executeMove(fromLabel, move) {
 }
 
 function finalizeMove(fromLabel, move) {
+  // Record this half-move before any state change so timeline stays aligned.
+  // Capture the full set of active same-player squares and a position snapshot
+  // now, before the deactivation sweep below overwrites state.pieces.
+  const movingPlayer = state.currentPlayer;
+  const activePeers = Object.keys(state.pieces).filter(
+    sq => state.pieces[sq].player === movingPlayer && state.pieces[sq].active
+  );
+  const piecesSnapshot = JSON.parse(JSON.stringify(state.pieces));
+  moveLog.splice(timelineIndex); // truncate any redo tail
+  moveLog.push({ player: movingPlayer, from: fromLabel, to: move.landing, activePeers, piecesSnapshot });
+
   for (const [sq, p] of Object.entries(state.pieces)) {
     if (p.player === state.currentPlayer && sq !== fromLabel) {
       state.pieces[sq] = { ...p, active: false };
@@ -1745,6 +1876,7 @@ function restartGame(forceResetColor) {
 
   timeline.length = 0;
   timelineIndex = -1;
+  moveLog.length = 0;
   pushTimeline();
   updateMetaDisplay();
 
@@ -1854,11 +1986,14 @@ function applyLanguageSwitch() {
     const bannerBtnEl = activeBanner.querySelector('.new-game-btn');
     
     if (bannerTextEl) {
-      if (vsAI && winner === humanPlayerColor) {
+      if (!vsAI) {
+        bannerTextEl.textContent = t('playerWinsBanner', { winner: winner });
+      } else if (winner === humanPlayerColor) {
         const pluralStr = humanStreak !== 1 ? 's' : '';
         bannerTextEl.textContent = t('humanWinsStreakBanner', { streak: humanStreak, plural: pluralStr });
       } else {
-        bannerTextEl.textContent = t('playerWinsBanner', { winner: winner });
+        const pluralStr = humanStreak !== 1 ? 's' : '';
+        bannerTextEl.textContent = t('humanLosesStreakBanner', { streak: humanStreak, plural: pluralStr });
       }
     }
     if (bannerBtnEl) bannerBtnEl.textContent = t('startNewGame');
