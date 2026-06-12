@@ -56,15 +56,15 @@ body {
 
   /* ── Stats Bar ── */
   .stats-bar {
-    font-family: 'Lato'; scale:1.2;
-    display: flex; gap: 2.3rem; font-size: 1rem; line-height: 0.8;
-    letter-spacing: 0.1em; background: rgba(175, 153, 28, 0.2);
-    padding: 0.4rem 1.2rem; border-radius: 20px; border: 2px solid rgba(211, 105, 23, 0.3);
+    font-family: 'Lato'; scale:1.15;
+    display: flex; gap: 2.3rem; font-size: 1rem; line-height: 1.2;
+    letter-spacing: 0.1em; background: rgba(72, 49, 2, 0.646);
+    padding: 0.4rem 1.2rem; border-radius: 40px; border: 1px solid rgba(199, 131, 3, 0.3);
   }
   .stats-bar strong { color: var(--gold);      font-family: "Molle", cursive; font-weight: 300; font-style: italic;}
   
   /* ── Mode & Help toggles ── */
-  .menu-controls { scale:1.1; font-size: 2rem; display: flex; flex-direction: column; align-items: center; gap: 0.6rem; }
+  .menu-controls { scale:1.1; font-size: 2rem; display: flex; flex-direction: column; align-items: center; gap: 0.6rem;}
   .mode-bar {
     display: flex; align-items: center; gap: 0.8rem;
     font-size: clamp(0.65rem, 1.8vw, 0.78rem); letter-spacing: 0.12em; color: var(--sand3);
@@ -88,11 +88,11 @@ body {
 
   /* ── Turn bar ── */
   .turn-bar { display: flex; align-items: center; gap: 1.4rem; font-size: clamp(0.7rem, 2vw, 1rem); letter-spacing: 0.15em; }
-  .player-tag { display: flex; align-items: center; gap: 0.5rem; opacity: 0.35; transition: opacity 0s; }
+  .player-tag { display: flex; align-items: center; gap: 0.5rem; opacity: 0.2; transition: opacity 0s; }
   .player-tag.active { opacity: 1; }
   .player-tag .dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid transparent; }
-  .player-tag.p1 .dot { background: radial-gradient(circle at 38% 32%, #f5f0e8, #c8bfad 55%, #a89f90); border: 1.5px solid rgba(196,154,68,0.5); }
-  .player-tag.p2 .dot{ background: radial-gradient(circle at 38% 32%, #5a3e28, #2a1a0e 55%, #1a0d05); border: 1.5px solid rgba(184,169,138,0.3); }
+  .player-tag.p1 .dot { background: radial-gradient(circle at 38% 32%, #f5f0e8, #c8bfad 55%, #a89f90); border: 1.5px solid var(--accent); }
+  .player-tag.p2 .dot{ background: radial-gradient(circle at 38% 32%, #5a3e28, #2a1a0e 55%, #1a0d05); border: 1.5px solid var(--accent); }
   .turn-divider { width: 2px; height: 16px; background: var(--accent); opacity: 0.6; }
 
   /* ── Shared slot: turn-bar and result-banner occupy the same fixed-height area ── */
@@ -146,24 +146,26 @@ body {
   .hidden { display: none !important; }
  
   .nav-btn {
-    background: var(--mid); border: 1px solid var(--accent); color: var(--sand2);
-    border-radius: 6px; width: 35px; height: 35px;
+    background: var(--sand3); border: 1px solid var(--sand); color: var(--mid);
+    border-radius: 38px; width: 38px; height: 38px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 0.72rem; cursor: pointer; transition: all 0.2s;
+    font-size: 0.72rem; cursor: pointer; transition: all 0.2s; 
     box-shadow: 0 2px 6px rgba(71, 42, 2, 0.722);
   }
-  .nav-btn:hover:not(:disabled) { background: var(--accent); border-color: var(--gold); color: #fff; }
+  .nav-btn:hover:not(:disabled) { background: var(--mid); border-color: var(--sand); color: var(--sand); }
   .nav-btn:disabled { opacity: 1; cursor: not-allowed; box-shadow: none; }
 
   /* ── Move log ── */
   .move-log {
+    scale:0.95;
     flex: 1; overflow-x: auto; display: flex; align-items: center;
-    gap: 0.35rem; padding: 0 0.5rem;
+    gap: 0.35rem; padding: 0 0.5rem; 
     scrollbar-width: none;
     -ms-overflow-style: none;
-    height: 35px;
-    background: rgba(86, 70, 39, 0.869); border: 1px solid rgba(122,79,46,0.35);
-    border-radius: 6px; box-shadow: inset 0 1px 4px rgba(0,0,0,0.3);
+    height: 40px;
+    border: 2px solid rgba(122, 79, 46, 0.765); border-radius: 20px;
+    box-shadow: inset 0 1px 4px rgba(0,0,0,0.3);
+    background: rgba(72, 49, 2, 0.646);
     min-width: 0;
   }
   .move-log::-webkit-scrollbar { display: none; }
@@ -173,13 +175,13 @@ body {
   }
   .move-log-entry {
     display: flex; align-items: center; gap: 0.22rem;
-    font-size: 0.9rem; letter-spacing: 0.08em; color: var(--sand);
+    font-size: 1.1rem; letter-spacing: 0.08em; color: var(--sand);
     white-space: nowrap; flex-shrink: 0;
-    padding: 0.1rem 0.28rem; border-radius: 4px;
+    padding: 0.5rem 0.4rem; border-radius: 0px;
     transition: opacity 0.2s;
   }
   .move-log-entry.future { opacity: 1; }
-  .move-log-entry.current { background: rgba(196,154,68,0.12); }
+  .move-log-entry.current { background: rgba(36, 24, 1, 0.898); border-color: var(--gold);}
   .move-log-dot {
     width: 13px; height: 13px; border-radius: 50%; flex-shrink: 0;
   }
@@ -192,7 +194,7 @@ body {
     border: 1px solid var(--accent);
   }
   .move-log-divider {
-    width: 1px; height: 14px; background: var(--sand); opacity: 0.25; flex-shrink: 0;
+    width: 1px; height: 15px; background: var(--accent); opacity: 0.4; flex-shrink: 0;
   }
 
   /* ── Result banner ── */
@@ -307,14 +309,14 @@ body {
   /* ── Piece ghost ── */
   .piece-ghost { position: fixed; border-radius: 50%; pointer-events: none; z-index: 50; }
   .piece-ghost.p1 {
-    background: radial-gradient(circle at 38% 32%, #f5f0e8, #c8bfad 55%, #a89f90);
+    background: radial-gradient(circle at 38% 32%, #f5f0e8b1, #c8bfad 55%, #a89f90);
     border: 2px solid var(--gold);
     box-shadow: 0 4px 12px rgba(0,0,0,0.55), inset 0 1px 3px rgba(255,255,255,0.7),
       0 0 0 3px rgba(196,154,68,0.5), 0 0 18px rgba(196,154,68,0.35);
   }
   .piece-ghost.p2 {
     background: radial-gradient(circle at 38% 32%, #5a3e28, #2a1a0e 55%, #1a0d05);
-    border: 2px solid var(--sand);
+    border: 2px solid var(--accent);
     box-shadow: 0 4px 12px rgba(0,0,0,0.65), inset 0 1px 3px rgba(255,255,255,0.15),
       0 0 0 3px rgba(232,220,200,0.35), 0 0 18px rgba(232,220,200,0.2);
   }
@@ -394,6 +396,14 @@ body {
   <h1>Sambaqui</h1>
 </header>
 
+<div class="menu-controls">
+  <div class="mode-bar">
+    <button class="mode-btn" id="mode-toggle">Treinar</button>
+    <button class="mode-btn" id="open-tutorial-btn">Como Jogar</button>
+    <button class="mode-btn"        id="lang-toggle-btn">EN</button>
+  </div>
+</div>
+
   <div class="board-controls" id="nav-controls">
     <button id="undo-btn" class="nav-btn" title="Undo" disabled>◀</button>
     <div class="move-log" id="move-log"></div>
@@ -404,14 +414,6 @@ body {
   <div><span id="stat-lvl-label">Nível</span> <strong id="stat-streak">0</strong></div>
     <div class="turn-divider"></div>
   <div><span id="stat-best-label">Melhor</span> <strong id="stat-high">0</strong></div>
-</div>
-
-<div class="menu-controls">
-  <div class="mode-bar">
-    <button class="mode-btn" id="mode-toggle">Treinar</button>
-    <button class="mode-btn" id="open-tutorial-btn">Como Jogar</button>
-    <button class="mode-btn"        id="lang-toggle-btn">EN</button>
-  </div>
 </div>
 
 
@@ -447,7 +449,7 @@ body {
 
 
 <div class="author">
-  Sambaqui • v1.2.7 • © 2026 Eduardo Eller
+  Sambaqui • v1.2.8 • © 2026 Eduardo Eller
 </div>
 </footer>
 
